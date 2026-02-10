@@ -1,31 +1,6 @@
 #!/bin/bash
-
-echo "=== Задание: MariaDB в Docker ==="
-echo ""
-
-# 1. Скачиваем образ
-echo "1. Скачиваем MariaDB..."
 docker pull mariadb:latest
-
-# 2. Запускаем контейнер
-echo "2. Запускаем контейнер..."
 docker run --name my-db -e MYSQL_ROOT_PASSWORD=root123 -p 3306:3306 -d mariadb:latest
-
-# 3. Ждем запуск
-echo "3. Ждем запуск БД (15 секунд)..."
 sleep 15
-
-# 4. Создаем пользователя analyst
-echo "4. Создаем пользователя analyst..."
 docker exec my-db mysql -u root -proot123 -e "CREATE USER 'analyst'@'%' IDENTIFIED BY 'analyst123'; GRANT ALL PRIVILEGES ON *.* TO 'analyst'@'%'; FLUSH PRIVILEGES;"
-
-# 5. Проверяем
-echo "5. Проверяем создание пользователя..."
 docker exec my-db mysql -u root -proot123 -e "SELECT User, Host FROM mysql.user WHERE User='analyst';"
-
-echo ""
-echo "=== Готово! ==="
-echo "Контейнер: my-db"
-echo "Порт: 3306"
-echo "Root пароль: root123"
-echo "Analyst пароль: analyst123"
