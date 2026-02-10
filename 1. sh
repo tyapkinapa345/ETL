@@ -2,7 +2,7 @@
 docker pull mariadb:latest
 docker run --name my-db -e MYSQL_ROOT_PASSWORD=root123 -p 3306:3306 -d mariadb:latest
 sleep 30
-docker exec my-db bash -c "mysql -u root -proot123 -e \"CREATE USER 'analyst'@'%' IDENTIFIED BY 'analyst123';\""
-docker exec my-db bash -c "mysql -u root -proot123 -e \"GRANT ALL PRIVILEGES ON *.* TO 'analyst'@'%';\""
-docker exec my-db bash -c "mysql -u root -proot123 -e \"FLUSH PRIVILEGES;\""
-docker exec my-db bash -c "mysql -u root -proot123 -e \"SELECT User, Host FROM mysql.user WHERE User='analyst';\""
+docker exec my-db /usr/bin/mysql -u root -proot123 -e "CREATE USER 'analyst'@'%' IDENTIFIED BY 'analyst123';"
+docker exec my-db /usr/bin/mysql -u root -proot123 -e "GRANT ALL PRIVILEGES ON *.* TO 'analyst'@'%';"
+docker exec my-db /usr/bin/mysql -u root -proot123 -e "FLUSH PRIVILEGES;"
+docker exec my-db /usr/bin/mysql -u root -proot123 -e "SELECT User, Host FROM mysql.user WHERE User='analyst';"
