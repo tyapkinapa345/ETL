@@ -1,0 +1,79 @@
+Платформы Data Engineering '25
+
+ubuntu 22.04
+============================
+dev
+1
+============================
+xrdp
+Docker version 28.0.0
+Docker Compose version v2.33.0
+===========================================
+JupyterLab
+python 3.10
+Открыть терминал выполнить команду  jupyter lab или запустить ярлык на панели быстрого доступа
+============================================
+============================
+1. Postgre sql 16 + pgadmin + DBeaver
+-------------------------------------------------------
+каталог ~/Downloads/dba/rel/postgresql 
+начало работы: sudo docker compose stop
+	   sudo docker compose start
+============================
+2. MongoDB 7 + Compass + Mongo express
+--------------------------------------------------------
+каталог ~/Downloads/dba/nonrel/mongo 
+начало работы: sudo docker compose stop
+	   sudo docker compose start
+============================
+3. Pentaho
+--------------------------------------------------------
+каталог cd ~/Downloads/lab_etl/pdi-ce-9.4.0.0-343/data-integration
+начало работы:  ./spoon.sh
+=============================
+4. Zeppelin 0.10
+---------------------------------------------------------
+каталог ~/Downloads/dba/nonrel/cassandra
+начало работы: sudo docker compose stop
+	   sudo docker compose start
+admin
+abc123!
+http://localhost:28080/
+=============================
+5. Cassandra 3.11
+----------------------------------------------------------
+каталог ~/Downloads/dba/nonrel/cassandra
+начало работы: sudo docker compose stop
+	   sudo docker compose start
+Cassandra
+Cassandra
+============================
+6. Cassandra Web
+--------------------------------------------------------
+каталог ~/Downloads/dba/nonrel/cassandra
+начало работы: sudo docker compose stop
+	   sudo docker compose start
+http://localhost:28200/
+============================
+7. Airflow_ETL
+
+~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL-main
+=============================
+8. Neo4J
+
+каталог ~/Downloads/dba/nonrel/neo4j
+начало работы: sudo docker compose stop
+	   sudo docker compose start
+=============================
+
+9. GraphDB
+
+каталог ~/Downloads/dba/nonrel/grapgdb
+начало работы: sudo docker compose stop
+	   sudo docker compose start
+=============================
+
+
+
+
+
