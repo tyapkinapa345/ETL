@@ -40,6 +40,14 @@ CSV File Input → Select values → Memory group by → Filter rows → Value m
                       ↓                                 ↓
               Dummy (do nothing)                   Write to log
 
+CSV file input – чтение исходного файла.
+Select values – переименование полей и приведение типов.
+Dummy (do nothing) – технический шаг, использовался как точка останова при отладке; в финальной версии просто передаёт данные дальше.
+Memory group by – шаг группировки, оставшийся от шаблона; в данном конвейере не выполняет агрегацию (настройки по умолчанию) и служит для демонстрации дополнительных возможностей PDI.
+Filter rows – фильтрация «битых» записей.
+Write to log – вывод промежуточных данных в лог для контроля качества фильтрации (параллельно с Value mapper).
+Value mapper – нормализация значений (например, замена кодов категорий на полные названия).
+Table output – загрузка очищенных данных в MySQL.
               
 ### 3.2. Ключевые шаги трансформации
 
@@ -67,7 +75,6 @@ CSV File Input → Select values → Memory group by → Filter rows → Value m
 | RETAIL TRANSFERS | retail_transfers | Number(10,2) | 0.00 |
 | WAREHOUSE SALES | warehouse_sales | Number(10,2) | 0.00 |
 
-![Select values — Fields](screenshots/3_select_values_fields.png)  
 ![Select values — Meta-data](screenshots/4_select_values_metadata.png)
 
 #### ✅ **Filter rows — очистка от «битых» записей**
@@ -99,7 +106,25 @@ CSV File Input → Select values → Memory group by → Filter rows → Value m
 - **Сопоставление полей:** через кнопку **«Enter mapping»** (имена полей в потоке совпадают с колонками в БД).
 
 ![Настройки Table output](screenshots/7_table_output.png)
-![Сопоставление полей](screenshots/8_mapping.png)
+
+
+
+
+Отлично, добавим описание всех шагов, включая вспомогательные, чтобы отчёт полностью соответствовал вашей реальной трансформации. Вставьте этот текст в раздел **3. Созданный ETL-конвейер**, заменив или дополнив предыдущую версию.
+
+### 3.3. Назначение вспомогательных шагов
+
+| Шаг | Роль в конвейере |
+|-----|------------------|
+| **Dummy (do nothing)** | Использовался для быстрой проверки промежуточных данных без прерывания потока. В финальной версии оставлен как элемент, упрощающий возможную доработку конвейера. |
+| **Memory group by** | Присутствует как наследие от шаблонного конвейера. В данной трансформации не выполняет группировку (все строки проходят через него без изменений), но может быть задействован в будущем для агрегации показателей по поставщикам или месяцам. |
+| **Write to log** | Выводит в лог первые строки после фильтрации, что позволяет визуально убедиться в корректности работы фильтра. Не замедляет выполнение и не влияет на итоговую загрузку. |
+
+![Настройки Memory group by](screenshots/3_3_memory_group_by.png)
+
+![Настройки Write to log](screenshots/3_3_write_to_log.png)
+
+Благодаря этим шагам процесс отладки был прозрачным, а финальный конвейер сохранил гибкость для доработки.
 
 ---
 
@@ -111,25 +136,28 @@ CSV File Input → Select values → Memory group by → Filter rows → Value m
 ```
 table orders.0 - Finished processing (I=0, O=0, R=15000, W=15000, U=0, E=0)
 ```
+![Окончание процесса](screenshots/8_process.png)
+![Окончание процесса](screenshots/9_process.png)
+
 
 ### Проверка в phpMyAdmin
 1. **Количество записей:**
    ```sql
    SELECT COUNT(*) FROM sales_data;
    ```
-   ![Результат COUNT](screenshots/9_sql_count.png)
+   ![Результат COUNT](screenshots/10_sql_count.png)
 
 2. **Пример данных:**
    ```sql
    SELECT * FROM sales_data LIMIT 10;
    ```
-   ![Пример данных](screenshots/10_sql_select.png)
+   ![Пример данных](screenshots/11_sql_select.png)
 
 3. **Проверка типов и кодировки:**
    ```sql
    DESCRIBE sales_data;
    ```
-   Все поля соответствуют заявленным типам, русский текст (названия поставщиков) отображается корректно.
+   ![Пример данных](screenshots/12_sql_describe.png)
 
 ---
 
