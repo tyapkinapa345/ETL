@@ -132,7 +132,7 @@ Table output – загрузка очищенных данных в MySQL.
 Лог выполнения:
 
 ```
-table orders.0 - Finished processing (I=0, O=0, R=15000, W=15000, U=0, E=0)
+table orders.0 - Finished processing (I=0, O=0, R=14980, W=14980, U=0, E=0)
 ```
 ![Окончание процесса](screenshots/8_process.png)
 ![Окончание процесса](screenshots/9_process.png)
