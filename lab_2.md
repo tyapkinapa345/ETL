@@ -240,7 +240,7 @@ ORDER BY total_sales DESC;
 Все трансформации и job работают стабильно, данные загружены корректно, что подтверждается контрольными SQL-запросами и полученными аналитическими результатами.
 
 ## Файлы
-- [Job](lab_2/Job CSV_to_MYsql_lab2.kjb)
+- [Job](lab_2/Job_CSV_to_MYsql_lab2.kjb)
 - [Трансформация загрузки orders_full](transformations/lab_02_1_csv_orders_full.ktr)
 - [Трансформация загрузки orders](transformations/lab_02_1_csv_orders_job.ktr)
 - [Трансформация загрузки orders_1](transformations/lab_02_1_csv_orders_1_job.ktr)
