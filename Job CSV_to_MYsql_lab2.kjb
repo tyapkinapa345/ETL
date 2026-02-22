@@ -595,7 +595,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>560</xloc>
+      <xloc>544</xloc>
       <yloc>112</yloc>
       <attributes_kjc/>
     </entry>
@@ -615,7 +615,7 @@
       <attributes_kjc/>
     </entry>
     <entry>
-      <name>csv_to_products 2</name>
+      <name>csv_to_orders_1</name>
       <description/>
       <type>TRANS</type>
       <attributes/>
@@ -810,7 +810,7 @@
     </hop>
     <hop>
       <from>csv_to_products</from>
-      <to>csv_to_products 2</to>
+      <to>csv_to_orders_1</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -818,7 +818,7 @@
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>csv_to_products 2</from>
+      <from>csv_to_orders_1</from>
       <to>Success</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
@@ -827,7 +827,7 @@
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>csv_to_products 2</from>
+      <from>csv_to_orders_1</from>
       <to>Write to log</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
