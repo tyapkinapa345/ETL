@@ -38,7 +38,7 @@
 6. **Write to log / Abort job** – в случае ошибки процесс прерывается с записью в лог.
 
 ### Скриншоты настроек Job
-#### Шаг HTTP
+#### Структура
 ![Структура](screenshots/job.png)
 
 ## Трансформация lab_02_1_csv_orders_full.ktr, lab_02_1_csv_orders_job.ktr, lab_02_1_csv_orders_1_job.ktr
