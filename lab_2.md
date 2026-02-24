@@ -221,7 +221,6 @@ FROM orders_full
 GROUP BY segment
 ORDER BY total_sales DESC;
 ```
-*Пример вывода:*
 | segment     | number_of_orders | total_quantity | total_sales | avg_sales_per_order | total_profit | avg_profit |
 |-------------|------------------|----------------|-------------|---------------------|--------------|------------|
 | Consumer    | 1921             | 9793           | 604778.75   | 233.145239          | 82277.68     | 31.718458  |
@@ -248,3 +247,6 @@ ORDER BY total_sales DESC;
 - [Трансформация загрузки products](transformations/lab_02_2_csv_ti_products.ktr)
 - [Трансформация анализа категорий](transformations/category_analytics.ktr)
 - [Трансформация анализа сегментов](transformations/segment_analytics.ktr)
+
+## Аналитика
+- [DataLens](https://datalens.yandex/usedy3rh07y0e)
