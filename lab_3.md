@@ -152,6 +152,8 @@ FROM raw_products p
 LEFT JOIN (SELECT product_id, AVG(rating) AS avg_rating, COUNT(*) AS review_count FROM raw_reviews GROUP BY product_id) r ON p.product_id = r.product_id
 LEFT JOIN (SELECT product_id, COUNT(*) AS return_count, SUM(quantity) AS total_returned_quantity FROM raw_returns GROUP BY product_id) ret ON p.product_id = ret.product_id;
 ```
+![Результат продуктовой аналитики](screenshots/problem_analytics.png)  
+
 
 ##### 4.1.2. `view_problem_products` – товары со средним рейтингом < 3 и наличием возвратов
 ```sql
@@ -188,6 +190,7 @@ WHERE COALESCE(r.avg_rating, 0) < 3
   AND COALESCE(ret.return_count, 0) > 0;
 ```
 В текущих данных таких товаров **не оказалось** (средний рейтинг у всех товаров с возвратами ≥ 3).
+![Результат проблемных товаров](screenshots/problem_products.png)  
 
 ##### 4.1.3. `view_problem_products_alt` – товары, имеющие хотя бы один плохой отзыв (rating < 3) и хотя бы один возврат
 ```sql
