@@ -89,27 +89,27 @@ CREATE TABLE raw_returns (
 - **Table Input** – чтение из PostgreSQL (`SELECT ... FROM products`).
 - **Table Output** – запись в `raw_products` (MySQL) с очисткой таблицы (Truncate).
 
-![Трансформация PostgreSQL](load_pg_raw.png)  
+![Трансформация PostgreSQL](screenshots/load_pg_raw.png)  
 *Рисунок 2 – Трансформация загрузки товаров*
 
 #### 3.2. Загрузка отзывов из CSV (`load_csv_raw.ktr`)
 - **CSV file input** – чтение `reviews.csv`.
 - **Table Output** – запись в `raw_reviews`.
 
-![Трансформация CSV](load_csv_raw.png)  
+![Трансформация CSV](screenshots/load_csv_raw.png)  
 *Рисунок 3 – Трансформация загрузки отзывов*
 
 #### 3.3. Загрузка возвратов из Excel (`load_excel_raw.ktr`)
 - **Excel input** – чтение `returns.xlsx`.
 - **Table Output** – запись в `raw_returns`.
 
-![Трансформация Excel](load_excel_raw.png)  
+![Трансформация Excel](screenshots/load_excel_raw.png)  
 *Рисунок 4 – Трансформация загрузки возвратов*
 
 #### 3.4. Job для последовательного запуска
 Создан Job (`main_etl_job.kjb`), который выполняет трансформации в порядке: CSV → Excel → PostgreSQL (Рис. 5). Это гарантирует актуальность данных при перезапуске.
 
-![Job](job_lab3.png)  
+![Job](screenshots/job_lab3.png)  
 
 ### 4. Результат в MySQL
 
@@ -204,7 +204,7 @@ INNER JOIN raw_reviews r ON p.product_id = r.product_id AND r.rating < 3
 INNER JOIN raw_returns ret ON p.product_id = ret.product_id;
 ```
 
-![Результат проблемных товаров](problem_products_alt.png)  
+![Результат проблемных товаров](screenshots/problem_products_alt.png)  
 
 
 ### 5. Анализ полученных данных
