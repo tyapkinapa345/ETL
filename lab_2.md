@@ -240,13 +240,13 @@ ORDER BY total_sales DESC;
 
 ## Файлы
 - [Job](lab_2/Job_CSV_to_MYsql_lab2.kjb)
-- [Трансформация загрузки orders_full](transformations/lab_02_1_csv_orders_full.ktr)
-- [Трансформация загрузки orders](transformations/lab_02_1_csv_orders_job.ktr)
-- [Трансформация загрузки orders_1](transformations/lab_02_1_csv_orders_1_job.ktr)
-- [Трансформация загрузки customers](transformations/lab_02_2_csv_ti_Customers.ktr)
-- [Трансформация загрузки products](transformations/lab_02_2_csv_ti_products.ktr)
-- [Трансформация анализа категорий](transformations/category_analytics.ktr)
-- [Трансформация анализа сегментов](transformations/segment_analytics.ktr)
+- [Трансформация загрузки orders_full](lab_2/lab_02_1_csv_orders_full.ktr)
+- [Трансформация загрузки orders](lab_2/lab_02_1_csv_orders_job.ktr)
+- [Трансформация загрузки orders_1](lab_2/lab_02_1_csv_orders_1_job.ktr)
+- [Трансформация загрузки customers](lab_2/lab_02_2_csv_ti_Customers.ktr)
+- [Трансформация загрузки products](lab_2/lab_02_2_csv_ti_products.ktr)
+- [Трансформация анализа категорий](lab_2/category_analytics.ktr)
+- [Трансформация анализа сегментов](lab_2/segment_analytics.ktr)
 
 ## Аналитика
 - [DataLens](https://datalens.yandex/usedy3rh07y0e)
