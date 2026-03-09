@@ -52,7 +52,9 @@ CREATE TABLE raw_products (
     price DECIMAL(10,2),
     stock_quantity INT
 );
+```
 
+```sql
 CREATE TABLE raw_reviews (
     id INT AUTO_INCREMENT PRIMARY KEY,
     review_id INT,
@@ -61,7 +63,9 @@ CREATE TABLE raw_reviews (
     comment TEXT,
     review_date DATE
 );
+```
 
+```sql
 CREATE TABLE raw_returns (
     id INT AUTO_INCREMENT PRIMARY KEY,
     return_id INT,
