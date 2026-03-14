@@ -242,4 +242,4 @@ INNER JOIN raw_returns ret ON p.product_id = ret.product_id;
 - [Созданный файл Products](lab_3/products.csv)
 
 ### Анализ
-[Аналих в DataLrns](https://datalens.yandex/ijnmy7eihhv02).
+[Аналих в DataLens](https://datalens.yandex/ijnmy7eihhv02).
