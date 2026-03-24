@@ -1,6 +1,6 @@
 
 # Отчёт по практической работе №4  
-## «Построение ETL-пайплайна средствами Dask и визуализация DAG»
+## Лабораторная работа 4.1 Анализ данных с помощью Dask и визуализация графов (DAG)
 
 **Вариант:** 16  
 **Ссылка на Google Colab:** [Выполненная работа](https://colab.research.google.com/drive/1oT9ulb3O1nvTDXH0Opy1JfTIsvGs02pX?usp=sharing)
