@@ -95,7 +95,7 @@ TEMPERATURE_THRESHOLD = 30
 
 
 ## 4. ML Аналитика (Jupyter Notebook)
-
+[Выполненная работа](https://colab.research.google.com/drive/1RYw_O41IozTZ8Q5bDlqhkJq6TWUOLDpd?usp=sharing)
 ### 4.1. Перенос модели в аналитический контур
 
 Файл `ml_model.pkl` скопирован с виртуальной машины на локальный компьютер и загружен в Google Colab для выполнения прогноза.
