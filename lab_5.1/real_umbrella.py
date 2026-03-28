@@ -11,7 +11,7 @@ import joblib
 import dill
 
 # ========== НАСТРОЙКИ ==========
-API_KEY = "ВАШ_КЛЮЧ_ЗДЕСЬ"   # Вставьте ваш API-ключ от WeatherAPI.com
+API_KEY = "8c436c2106bf40599dd104558262803"   # Вставьте ваш API-ключ от WeatherAPI.com
 CITY = "Dubai"
 DAYS = 3
 TEMPERATURE_THRESHOLD = 30   # для фильтрации >30°C
@@ -111,12 +111,12 @@ default_args = {
 }
 
 with DAG(
-    dag_id='variant_16',
+    dag_id='real_umbrella_dubai',
     default_args=default_args,
     description='ETL для прогноза погоды в Дубай и подсчёта жарких дней',
     schedule_interval=None,  # запуск только по триггеру
     catchup=False,
-    tags=['umbrella', 'dubai', 'variant16'],
+    tags=['umbrella', 'dubai', 'real_umbrella_dubai'],
 ) as dag:
     
     start = DummyOperator(task_id='start')
