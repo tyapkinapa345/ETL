@@ -1,6 +1,5 @@
 # Лабораторная работа 5.1: Проектирование объектной модели данных. Проектирование сквозного конвейера ETL
 
-**Вариант 16**  
 |Вариант|Задание 1 (Сбор данных)|Задание 2 (Трансформация)|Задание 3 (Сохранение/Визуализация)|
 |-------|-----------------------|-------------------------|-----------------------------------|
 |16|Прогноз: Дубай, 3 дня|Фильтр: t > 30°C|Вывести кол-во таких дней|
@@ -39,10 +38,6 @@
   sudo docker compose up --build
   ```
 - Веб-интерфейс Airflow доступен по адресу `http://localhost:8080` (логин/пароль `airflow`/`airflow`).
-
-**Скриншот 1:** Список DAG в Airflow  
-*(вставить скриншот с активными DAG)*
-![Простой DAG](screenshots/simple_dag.png)
 
 ## 2. Архитектура решения
 
@@ -85,8 +80,8 @@ TEMPERATURE_THRESHOLD = 30
 - DAG `real_umbrella_dubai` состоит из задач:
   - `start` (dummy) → `fetch_weather_forecast` → `train_model` → `save_model_info` → `end`.
 
-
 ![Graph View DAG](screenshots/real_umbrella_dubai.png)
+![Ganta View DAG](screenshots/Ganta_real_umbrella_dubai.png)
 
 ### 3.2. Результаты выполнения
 
@@ -98,9 +93,6 @@ TEMPERATURE_THRESHOLD = 30
 - `ml_model.pkl` – обученная модель
 - `model_info.txt` – информация о модели
 
-**Скриншот 5:** Логи задачи `fetch_weather_forecast`  
-*(вставить скриншот с выводом количества жарких дней)*
-![Логи задачи fetch_weather_forecast](screenshots/simple_dag.png)
 
 ## 4. ML Аналитика (Jupyter Notebook)
 
@@ -158,10 +150,6 @@ plt.show()
 - Средняя температура: **23.3°C**
 - Прогнозируемые продажи: **82.89** (условных единиц)
 
-**Скриншот 6:** Результат выполнения ноутбука  
-*(вставить скриншот с выводом и графиком)*
-![Результат выполнения ноутбука](screenshots/sale.png)
-
 ## 5. Визуализация в Streamlit
 
 Дополнительно разработано Streamlit-приложение `app/app.py`, которое отображает:
@@ -173,8 +161,8 @@ plt.show()
 
 Приложение запущено в контейнере и доступно по адресу `http://localhost:8501`.
 ![Streamlit dashboard](screenshots/Streamlit_1.png)
-![Streamlit dashboard](screenshots/Streamlit_2.png)
 ![Streamlit dashboard](screenshots/Streamlit_3.png)
+![Streamlit dashboard](screenshots/Streamlit_2.png)
 
 ## 6. Заключение
 
