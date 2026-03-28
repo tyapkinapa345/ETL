@@ -1,36 +1,191 @@
-API-key: 8c436c2106bf40599dd104558262803
+# Лабораторная работа 5.1: Проектирование объектной модели данных. Проектирование сквозного конвейера ETL
+
+**Вариант 16**  
+|Вариант|Задание 1 (Сбор данных)|Задание 2 (Трансформация)|Задание 3 (Сохранение/Визуализация)|
+|-------|-----------------------|-------------------------|-----------------------------------|
+|16|Прогноз: Дубай, 3 дня|Фильтр: t > 30°C|Вывести кол-во таких дней|
+
+---
+
+## Цель работы
+
+1. Развернуть среду оркестрации Apache Airflow с использованием Docker.
+2. Изучить структуру и принципы работы ETL-конвейеров (DAG).
+3. Спроектировать архитектуру аналитического решения.
+4. Реализовать ETL-процесс получения погодных данных через API и их обработки.
+5. Использовать обученную ML-модель для прогнозирования продаж.
+
+---
+
+## 1. Развертывание среды
+
+### 1.1. Подготовка виртуальной машины
+
+- Использовался образ `ETL+devops_26.ova` в VirtualBox.
+- Репозиторий с проектом клонирован:
+  ```bash
+  git clone https://github.com/BosenkoTM/workshop-on-ETL.git
+  cd ~/workshop-on-ETL/practice/business_case_umbrella_25
+  ```
+
+### 1.2. Настройка Airflow в Docker
+
+- Собран Docker-образ:
+  ```bash
+  sudo docker build -t custom-airflow:slim-2.8.1-python3.11 .
+  ```
+- Запущены сервисы:
+  ```bash
+  sudo docker compose up --build
+  ```
+- Веб-интерфейс Airflow доступен по адресу `http://localhost:8080` (логин/пароль `airflow`/`airflow`).
+
+**Скриншот 1:** Список DAG в Airflow  
+*(вставить скриншот с активными DAG)*
+![Простой DAG](screenshots/simple_dag.png)
+
+## 2. Архитектура решения
+
+Спроектирована схема в Draw.io, отражающая три слоя:
+
+- **Source Layer:** WeatherAPI – внешний источник данных.
+- **Storage Layer:**  
+  - Сырые данные: `dubai_forecast.csv`  
+  - Артефакт модели: `ml_model.pkl`  
+  - Метаданные: `avg_temp.txt`, `dubai_hot_days_count.txt`
+- **Business Layer:**  
+  - Jupyter Notebook – загрузка модели и прогноз продаж.  
+  - Streamlit Dashboard – визуализация прогноза и температуры.
+
+Схема сохранена как `archi.png`.
+![Архитектурная схема](screenshots/archi.png)
 
 
-8bc9679a53b7
-*** Found local files:
-***   * /opt/airflow/logs/dag_id=real_umbrella_dubai/run_id=manual__2026-03-28T14:59:01.900896+00:00/task_id=train_model/attempt=1.log
-[2026-03-28, 14:59:07 UTC] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: real_umbrella_dubai.train_model manual__2026-03-28T14:59:01.900896+00:00 [queued]>
-[2026-03-28, 14:59:07 UTC] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: real_umbrella_dubai.train_model manual__2026-03-28T14:59:01.900896+00:00 [queued]>
-[2026-03-28, 14:59:07 UTC] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
-[2026-03-28, 14:59:07 UTC] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): train_model> on 2026-03-28 14:59:01.900896+00:00
-[2026-03-28, 14:59:07 UTC] {standard_task_runner.py:60} INFO - Started process 222 to run task
-[2026-03-28, 14:59:07 UTC] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'real_umbrella_dubai', 'train_model', 'manual__2026-03-28T14:59:01.900896+00:00', '--job-id', '45', '--raw', '--subdir', 'DAGS_FOLDER/real_umbrella.py', '--cfg-path', '/tmp/tmpvr3c64x1']
-[2026-03-28, 14:59:07 UTC] {standard_task_runner.py:88} INFO - Job 45: Subtask train_model
-[2026-03-28, 14:59:07 UTC] {task_command.py:423} INFO - Running <TaskInstance: real_umbrella_dubai.train_model manual__2026-03-28T14:59:01.900896+00:00 [running]> on host 8bc9679a53b7
-[2026-03-28, 14:59:07 UTC] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='real_umbrella_dubai' AIRFLOW_CTX_TASK_ID='train_model' AIRFLOW_CTX_EXECUTION_DATE='2026-03-28T14:59:01.900896+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-03-28T14:59:01.900896+00:00'
-[2026-03-28, 14:59:07 UTC] {taskinstance.py:2698} ERROR - Task failed with exception
-Traceback (most recent call last):
-  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
-    result = execute_callable(context=context, **execute_callable_kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 199, in execute
-    return_value = self.execute_callable()
-                   ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 216, in execute_callable
-    return self.python_callable(*self.op_args, **self.op_kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/airflow/dags/real_umbrella.py", line 91, in train_model
-    joblib.dump(model, MODEL_PATH)
-  File "/home/airflow/.local/lib/python3.11/site-packages/joblib/numpy_pickle.py", line 599, in dump
-    with open(filename, "wb") as f:
-         ^^^^^^^^^^^^^^^^^^^^
-PermissionError: [Errno 13] Permission denied: '/opt/airflow/data/ml_model.pkl'
-[2026-03-28, 14:59:07 UTC] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=real_umbrella_dubai, task_id=train_model, execution_date=20260328T145901, start_date=20260328T145907, end_date=20260328T145907
-[2026-03-28, 14:59:07 UTC] {standard_task_runner.py:107} ERROR - Failed to execute job 45 for task train_model ([Errno 13] Permission denied: '/opt/airflow/data/ml_model.pkl'; 222)
-[2026-03-28, 14:59:07 UTC] {local_task_job_runner.py:234} INFO - Task exited with return code 1
-[2026-03-28, 14:59:07 UTC] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check
+## 3. Реализация индивидуального задания (Вариант 16)
+
+### 3.1. Настройка реального конвейера
+
+- В файле `dags/real_umbrella_dubai.py` (скопирован из `real_umbrella.py`) внесены изменения:
+
+```python
+API_KEY = "8c436c2106bf40599dd104558262803"   # реальный ключ
+CITY = "Dubai"
+DAYS = 3
+TEMPERATURE_THRESHOLD = 30
+```
+
+- Функция `fetch_weather_forecast` теперь:
+  - Загружает прогноз для Дубая на 3 дня.
+  - Сохраняет CSV в `/opt/airflow/data/dubai_forecast.csv`.
+  - Подсчитывает количество дней с температурой >30°C и сохраняет в `dubai_hot_days_count.txt`.
+  - Вычисляет среднюю температуру и сохраняет в `avg_temp.txt`.
+
+- Функция `train_model` обучает линейную регрессию на синтетических данных (температура → продажи) и сохраняет модель в `ml_model.pkl`.
+
+- DAG `real_umbrella_dubai` состоит из задач:
+  - `start` (dummy) → `fetch_weather_forecast` → `train_model` → `save_model_info` → `end`.
+
+
+![Graph View DAG](screenshots/real_umbrella_dubai.png)
+
+### 3.2. Результаты выполнения
+
+После успешного запуска в папке `data/` появились файлы:
+
+- `dubai_forecast.csv` – прогноз на 3 дня (дата, max температура, условие)
+- `dubai_hot_days_count.txt` – количество дней с температурой >30°C (в нашем случае = 0, т.к. в прогнозе температуры не превышали 30)
+- `avg_temp.txt` – средняя температура (23.3°C)
+- `ml_model.pkl` – обученная модель
+- `model_info.txt` – информация о модели
+
+**Скриншот 5:** Логи задачи `fetch_weather_forecast`  
+*(вставить скриншот с выводом количества жарких дней)*
+![Логи задачи fetch_weather_forecast](screenshots/simple_dag.png)
+
+## 4. ML Аналитика (Jupyter Notebook)
+
+### 4.1. Перенос модели в аналитический контур
+
+Файл `ml_model.pkl` скопирован с виртуальной машины на локальный компьютер и загружен в Google Colab для выполнения прогноза.
+
+### 5.2. Ноутбук [прогноз продаж зонтиков](lab_5.1/прогноз_продаж.ipynb)
+
+Код ноутбука:
+
+```python
+# Установка нужной версии scikit-learn (совместимой с обучением)
+!pip install scikit-learn==1.8.0
+
+import joblib
+import pandas as pd
+import matplotlib.pyplot as plt
+from google.colab import files
+
+# Загрузка файлов
+uploaded = files.upload()   # ml_model.pkl, avg_temp.txt, dubai_forecast.csv
+
+# Чтение средней температуры
+with open("avg_temp.txt", "r") as f:
+    avg_temp = float(f.read().strip())
+
+# Загрузка модели
+model = joblib.load("ml_model.pkl")
+
+# Прогноз продаж
+prediction = model.predict([[avg_temp]])[0]
+
+print(f"Средняя температура за 3 дня: {avg_temp:.1f}°C")
+print(f"Прогнозируемые продажи: {prediction:.2f}")
+
+# Построение графика температуры по дням
+df = pd.read_csv("dubai_forecast.csv")
+df['date'] = pd.to_datetime(df['date'])
+df.sort_values('date', inplace=True)
+
+plt.figure(figsize=(10,5))
+plt.plot(df['date'], df['temp_c'], marker='o', linestyle='-', color='orange')
+plt.title('Температура в Дубае (прогноз на 3 дня)')
+plt.xlabel('Дата')
+plt.ylabel('Температура (°C)')
+plt.grid(True)
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+```
+
+**Вывод:**
+
+- Средняя температура: **23.3°C**
+- Прогнозируемые продажи: **82.89** (условных единиц)
+
+**Скриншот 6:** Результат выполнения ноутбука  
+*(вставить скриншот с выводом и графиком)*
+![Результат выполнения ноутбука](screenshots/sale.png)
+
+## 5. Визуализация в Streamlit
+
+Дополнительно разработано Streamlit-приложение `app/app.py`, которое отображает:
+
+- Таблицу прогноза погоды.
+- Количество жарких дней (>30°C).
+- График температуры.
+- Прогноз продаж на основе средней температуры.
+
+Приложение запущено в контейнере и доступно по адресу `http://localhost:8501`.
+![Streamlit dashboard](screenshots/Streamlit_1.png)
+![Streamlit dashboard](screenshots/Streamlit_2.png)
+![Streamlit dashboard](screenshots/Streamlit_3.png)
+
+## 6. Заключение
+
+В ходе лабораторной работы были успешно выполнены все этапы:
+
+1. Развёрнута среда Airflow в Docker.
+2. Изучен модельный DAG и принципы построения ETL-конвейеров.
+3. Спроектирована архитектура решения с выделением трёх слоёв.
+4. Реализован индивидуальный DAG для варианта 16:
+   - Получение прогноза для Дубая на 3 дня.
+   - Фильтрация и подсчёт дней с температурой >30°C.
+   - Обучение модели и сохранение артефактов.
+5. В Jupyter Notebook загружена модель и получен прогноз продаж.
+6. Подготовлен отчёт и файлы для сдачи.
