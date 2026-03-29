@@ -15,6 +15,7 @@
 ## Архитектура
 
 ### Верхнеуровневая архитектура аналитического решения
+![Архитектура](screenshots/lab_5.2.drawio.png)
 
 ```mermaid
 flowchart TD
@@ -46,6 +47,10 @@ flowchart TD
     Logs -->|cat/log чтение| User
     DataLake -->|cat/скриншоты| User
 ```
+![Архитектура](screenshots/Rocket.drawio.png)
+
+### Начало работы в терминале
+Запуск контейнеров.
 
 ![Terminal](screenshots/build.png)
 ![Terminal](screenshots/chmod.png)
