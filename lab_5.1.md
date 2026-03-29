@@ -39,6 +39,10 @@
   ```
 - Веб-интерфейс Airflow доступен по адресу `http://localhost:8080` (логин/пароль `airflow`/`airflow`).
 
+![Терминал](screenshots/code1.png)
+![Терминал](screenshots/code2.png)
+![Терминал](screenshots/code3.png)
+
 ## 2. Архитектура решения
 
 Спроектирована схема в Draw.io, отражающая три слоя:
