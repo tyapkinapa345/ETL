@@ -15,7 +15,6 @@
 ## Архитектура
 
 ### Верхнеуровневая архитектура аналитического решения
-### Верхнеуровневая архитектура
 
 ```mermaid
 flowchart TD
@@ -47,6 +46,7 @@ flowchart TD
     Logs -->|cat/log чтение| User
     DataLake -->|cat/скриншоты| User
 ```
+
 ![Архитектура](screenshots/architecture_high_level.png)  
 
 ### Архитектура DAG `listing_TyapkinaPA_Rocket`
