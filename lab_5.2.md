@@ -47,7 +47,9 @@ flowchart TD
     DataLake -->|cat/скриншоты| User
 ```
 
-![Архитектура](screenshots/architecture_high_level.png)  
+![Terminal](screenshots/build.png)
+![Terminal](screenshots/chmod.png)
+![Terminal](screenshots/compose.png)
 
 ### Архитектура DAG `listing_TyapkinaPA_Rocket`
 
@@ -82,12 +84,10 @@ flowchart TD
 ![Logs get_pictures](screenshots/get_picture.png)
 ![Logs get_pictures](screenshots/landing_times_airflow.png)
 
-![ML](screenshots/jupiter.png)
 ![ML](screenshots/jupiter_.png)
+![ML](screenshots/jupiter.png)
 
-![Terminal](screenshots/build.png)
-![Terminal](screenshots/chmod.png)
-![Terminal](screenshots/compose.png)
+
 
 ### Отчёт по доменам (задание 1)
 
