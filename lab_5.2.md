@@ -17,12 +17,10 @@
 ### Верхнеуровневая архитектура аналитического решения
 
 ![Архитектура](screenshots/architecture_high_level.png)  
-*Здесь должна быть схема из draw.io: Source Layer (API), Storage Layer (папки data, logs), Business Layer (Airflow UI, Jupyter, Streamlit).*
 
 ### Архитектура DAG `listing_TyapkinaPA_Rocket`
 
 ![DAG Architecture](screenshots/graph_air.png)  
-*Логика: Start → clean_data → check_server → download_json → get_pictures → report_domain_counts → notify → End.*
 
 ## Реализация
 
@@ -44,20 +42,15 @@
 
 ![Graph View](screenshots/graph_air.png)
 
-*На скриншоте видна последовательность задач: очистка → проверка сервера → загрузка JSON → загрузка изображений → отчёт по доменам → уведомление.*
-
 ### Диаграмма Ганта (Gantt Chart)
 
 ![Gantt Chart](screenshots/gantta_airflow.png)
-
-*Диаграмма показывает длительность выполнения каждой задачи. Задача `get_pictures` занимает больше всего времени из-за скачивания изображений.*
 
 ### Логи выполнения задачи `get_pictures`
 
 ![Logs get_pictures](screenshots/get_picture.png)
 ![Logs get_pictures](screenshots/landing_times_airflow.png)
 
-*В логах видно успешное скачивание изображений по URL и сохранение их в `data/images/`. Ошибок не зафиксировано.*
 ![ML](screenshots/jupiter.png)
 ![ML](screenshots/jupiter_.png)
 
@@ -87,16 +80,12 @@ imgur.com: 2
 ![Terminal](screenshots/ps.png)
 ![Terminal](screenshots/logs_1.png)
 
-Или скриншот пустого файла.
-
 ### Streamlit дашборд
 
 ![Streamlit Dashboard](screenshots/ml_etl_data.png)
 ![Streamlit Dashboard](screenshots/static.png)
 ![Streamlit Dashboard](screenshots/galery_raket.png)
 ![Streamlit Dashboard](screenshots/galery_raket_1.png)
-
-*Верхняя часть – таблица ближайших запусков из `launches.json`. Нижняя – результаты ML: bar-chart по типам ракет и галерея изображений с предсказаниями модели CLIP.*
 
 ## Анализ задачи ML
 
