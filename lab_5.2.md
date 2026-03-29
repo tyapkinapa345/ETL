@@ -15,7 +15,38 @@
 ## Архитектура
 
 ### Верхнеуровневая архитектура аналитического решения
+### Верхнеуровневая архитектура
 
+```mermaid
+flowchart TD
+    subgraph Source_Layer ["Source Layer"]
+        API[Launch Library 2 API]
+        User[Пользователь / Аналитик]
+    end
+
+    subgraph Storage_Layer ["Storage Layer (Bind Mounts на хосте)"]
+        DataLake["./data/ \n (JSON, images, ML results)"]
+        Logs["./logs/ \n (логи Airflow, error_log.txt)"]
+    end
+
+    subgraph Business_Layer ["Business Layer (Контейнеры Docker)"]
+        Airflow[Apache Airflow\nETL & оркестрация]
+        Jupyter[Jupyter Notebook\nML классификация (CLIP)]
+        Streamlit[Streamlit\nДашборд и визуализация]
+    end
+
+    API -->|HTTP GET| Airflow
+    Airflow -->|скачивает JSON и картинки| DataLake
+    Airflow -->|пишет логи| Logs
+    Jupyter -->|читает картинки| DataLake
+    Jupyter -->|сохраняет ml_predictions.csv| DataLake
+    Streamlit -->|читает JSON и CSV| DataLake
+    User -->|браузер :8080| Airflow
+    User -->|браузер :8888| Jupyter
+    User -->|браузер :8501| Streamlit
+    Logs -->|cat/log чтение| User
+    DataLake -->|cat/скриншоты| User
+```
 ![Архитектура](screenshots/architecture_high_level.png)  
 
 ### Архитектура DAG `listing_TyapkinaPA_Rocket`
