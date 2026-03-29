@@ -58,10 +58,12 @@
 ![Logs get_pictures](screenshots/landing_times_airflow.png)
 
 *В логах видно успешное скачивание изображений по URL и сохранение их в `data/images/`. Ошибок не зафиксировано.*
+![ML](screenshots/jupiter.png)
+![ML](screenshots/jupiter_.png)
 
-![Domain report](screenshots/build.png)
-![Domain report](screenshots/chmod.png)
-![Domain report](screenshots/compose.png)
+![Terminal](screenshots/build.png)
+![Terminal](screenshots/chmod.png)
+![Terminal](screenshots/compose.png)
 
 ### Отчёт по доменам (задание 1)
 
@@ -82,16 +84,16 @@ imgur.com: 2
 ```
 (если ошибок не было – напишите "Ошибок не зафиксировано")
 ```
-![Domain report](screenshots/ps.png)
-![Domain report](screenshots/logs_1.png)
+![Terminal](screenshots/ps.png)
+![Terminal](screenshots/logs_1.png)
 
 Или скриншот пустого файла.
 
 ### Streamlit дашборд
 
 ![Streamlit Dashboard](screenshots/ml_etl_data.png)
-![Streamlit Dashboard](screenshots/type_raket_etl_data.png)
 ![Streamlit Dashboard](screenshots/static.png)
+![Streamlit Dashboard](screenshots/galery_raket.png)
 ![Streamlit Dashboard](screenshots/galery_raket_1.png)
 
 *Верхняя часть – таблица ближайших запусков из `launches.json`. Нижняя – результаты ML: bar-chart по типам ракет и галерея изображений с предсказаниями модели CLIP.*
