@@ -83,7 +83,6 @@ imgur.com: 2
 (если ошибок не было – напишите "Ошибок не зафиксировано")
 ```
 ![Domain report](screenshots/ps.png)
-![Domain report](screenshots/logs.png)
 ![Domain report](screenshots/logs_1.png)
 
 Или скриншот пустого файла.
