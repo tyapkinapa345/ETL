@@ -38,14 +38,22 @@ def check_server_availability():
 
 # --- Загрузка JSON (как в исходном DAG, но с обработкой ошибок) ---
 def download_launches(**context):
-    """Скачивает JSON, при ошибке пишет в лог."""
+    """Скачивает JSON и сохраняет его и в /tmp/launches.json, и в DATA_DIR/launches.json"""
     try:
         resp = requests.get(API_URL, timeout=30)
         resp.raise_for_status()
         data = resp.json()
+        
+        # Сохраняем во временный файл (для get_pictures)
         with open(TMP_JSON_FILE, "w") as f:
             json.dump(data, f)
-        logging.info("JSON успешно сохранён")
+        
+        # Сохраняем в DATA_DIR для Streamlit
+        final_json_path = f"{DATA_DIR}/launches.json"
+        with open(final_json_path, "w") as f:
+            json.dump(data, f)
+        
+        logging.info(f"JSON сохранён в {TMP_JSON_FILE} и {final_json_path}")
     except Exception as e:
         error_msg = f"{datetime.now()} - Ошибка загрузки JSON: {str(e)}"
         logging.error(error_msg)
@@ -131,7 +139,7 @@ dag = DAG(
     schedule_interval="@daily",
     catchup=False,
     default_args={
-        'owner': 'ivanov',            # ваше имя
+        'owner': 'TyapkinaPA',            
         'retries': 1,
     }
 )
