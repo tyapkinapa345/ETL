@@ -125,7 +125,7 @@ def report_domain_counts(**context):
 
 # --- Определение DAG ---
 dag = DAG(
-    dag_id="listing_ivanov_Rocket",   # замените ivanov на свою фамилию
+    dag_id="listing_TyapkinaPA_Rocket",   # замените ivanov на свою фамилию
     description="Вариант 16: проверка доступности, подсчёт по доменам, логирование ошибок",
     start_date=airflow.utils.dates.days_ago(1),
     schedule_interval="@daily",
