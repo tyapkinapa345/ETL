@@ -19,19 +19,19 @@
 ```mermaid
 flowchart TD
     subgraph Source_Layer ["Source Layer"]
-        API[Launch Library 2 API]
-        User[Пользователь / Аналитик]
+        API["Launch Library 2 API"]
+        User["Пользователь / Аналитик"]
     end
 
     subgraph Storage_Layer ["Storage Layer (Bind Mounts на хосте)"]
-        DataLake["./data/ \n (JSON, images, ML results)"]
-        Logs["./logs/ \n (логи Airflow, error_log.txt)"]
+        DataLake["./data/ - JSON, images, ML results"]
+        Logs["./logs/ - логи Airflow, error_log.txt"]
     end
 
     subgraph Business_Layer ["Business Layer (Контейнеры Docker)"]
-        Airflow[Apache Airflow\nETL & оркестрация]
-        Jupyter[Jupyter Notebook\nML классификация (CLIP)]
-        Streamlit[Streamlit\nДашборд и визуализация]
+        Airflow["Apache Airflow - ETL и оркестрация"]
+        Jupyter["Jupyter Notebook - ML классификация CLIP"]
+        Streamlit["Streamlit - Дашборд и визуализация"]
     end
 
     API -->|HTTP GET| Airflow
