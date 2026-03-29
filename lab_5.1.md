@@ -37,6 +37,8 @@
   ```bash
   sudo docker compose up --build
   ```
+![Терминал](screenshots/airflow.png)
+  
 - Веб-интерфейс Airflow доступен по адресу `http://localhost:8080` (логин/пароль `airflow`/`airflow`).
 
 ![Терминал](screenshots/code1.png)
