@@ -102,54 +102,9 @@ TEMPERATURE_THRESHOLD = 30
 
 ## 4. ML Аналитика (Jupyter Notebook)
 [Выполненная работа](https://colab.research.google.com/drive/1RYw_O41IozTZ8Q5bDlqhkJq6TWUOLDpd?usp=sharing)
-### 4.1. Перенос модели в аналитический контур
 
 Файл `ml_model.pkl` скопирован с виртуальной машины на локальный компьютер и загружен в Google Colab для выполнения прогноза.
 
-### 5.2. Ноутбук [прогноз продаж зонтиков](lab_5.1/прогноз_продаж.ipynb)
-
-Код ноутбука:
-
-```python
-# Установка нужной версии scikit-learn (совместимой с обучением)
-!pip install scikit-learn==1.8.0
-
-import joblib
-import pandas as pd
-import matplotlib.pyplot as plt
-from google.colab import files
-
-# Загрузка файлов
-uploaded = files.upload()   # ml_model.pkl, avg_temp.txt, dubai_forecast.csv
-
-# Чтение средней температуры
-with open("avg_temp.txt", "r") as f:
-    avg_temp = float(f.read().strip())
-
-# Загрузка модели
-model = joblib.load("ml_model.pkl")
-
-# Прогноз продаж
-prediction = model.predict([[avg_temp]])[0]
-
-print(f"Средняя температура за 3 дня: {avg_temp:.1f}°C")
-print(f"Прогнозируемые продажи: {prediction:.2f}")
-
-# Построение графика температуры по дням
-df = pd.read_csv("dubai_forecast.csv")
-df['date'] = pd.to_datetime(df['date'])
-df.sort_values('date', inplace=True)
-
-plt.figure(figsize=(10,5))
-plt.plot(df['date'], df['temp_c'], marker='o', linestyle='-', color='orange')
-plt.title('Температура в Дубае (прогноз на 3 дня)')
-plt.xlabel('Дата')
-plt.ylabel('Температура (°C)')
-plt.grid(True)
-plt.xticks(rotation=45)
-plt.tight_layout()
-plt.show()
-```
 
 **Вывод:**
 
