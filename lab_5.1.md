@@ -114,7 +114,7 @@ TEMPERATURE_THRESHOLD = 30
 Приложение запущено в контейнере и доступно по адресу `http://localhost:8501`.
 ![Streamlit dashboard](screenshots/Streamlit_1.png)
 
-## 4. ML Аналитика (Jupyter Notebook)
+## 5. ML Аналитика (Jupyter Notebook)
 [Выполненная работа](https://colab.research.google.com/drive/1RYw_O41IozTZ8Q5bDlqhkJq6TWUOLDpd?usp=sharing)
 
 Файл `ml_model.pkl` скопирован с виртуальной машины на локальный компьютер и загружен в Google Colab для выполнения прогноза.
