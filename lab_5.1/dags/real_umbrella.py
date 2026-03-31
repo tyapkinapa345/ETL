@@ -11,7 +11,7 @@ import joblib
 import dill
 
 # ========== НАСТРОЙКИ ==========
-API_KEY = "8c436c2106bf40599dd104558262803"   # Вставьте ваш API-ключ от WeatherAPI.com
+API_KEY = "8c436c2106bf40599dd104558262803"   # Ваш API-ключ
 CITY = "Dubai"
 DAYS = 3
 TEMPERATURE_THRESHOLD = 30   # для фильтрации >30°C
@@ -22,6 +22,7 @@ os.makedirs(DATA_DIR, exist_ok=True)
 
 RAW_DATA_PATH = f"{DATA_DIR}/dubai_forecast.csv"
 HOT_DAYS_COUNT_PATH = f"{DATA_DIR}/dubai_hot_days_count.txt"
+HOT_DAYS_LIST_PATH = f"{DATA_DIR}/hot_days_list.txt"   # <-- новый файл со списком жарких дней
 AVG_TEMP_PATH = f"{DATA_DIR}/avg_temp.txt"
 MODEL_PATH = f"{DATA_DIR}/ml_model.pkl"
 
@@ -56,6 +57,15 @@ def fetch_weather_forecast(**kwargs):
     with open(HOT_DAYS_COUNT_PATH, 'w') as f:
         f.write(str(count_hot))
     
+    # Сохраняем список дат и температур таких дней
+    with open(HOT_DAYS_LIST_PATH, 'w') as f:
+        if count_hot == 0:
+            f.write("Нет дней с температурой > 30°C\n")
+        else:
+            for _, row in hot_days.iterrows():
+                f.write(f"{row['date']}: {row['temp_c']}°C\n")
+    print(f"Список жарких дней сохранён в {HOT_DAYS_LIST_PATH}")
+    
     # Сохраняем среднюю температуру для прогнозирования продаж
     avg_temp = df['temp_c'].mean()
     with open(AVG_TEMP_PATH, 'w') as f:
@@ -65,17 +75,10 @@ def fetch_weather_forecast(**kwargs):
     kwargs['ti'].xcom_push(key='hot_days_count', value=count_hot)
     kwargs['ti'].xcom_push(key='avg_temp', value=avg_temp)
     
-    return df.to_dict('records')  # возвращаем для возможного использования
+    return df.to_dict('records')
 
 def train_model(**kwargs):
-    """Обучение простой линейной регрессии на исторических данных (если есть)."""
-    # Здесь можно реализовать загрузку исторических данных, но для примера
-    # создадим синтетические данные: температура vs продажи зонтов.
-    # В реальном проекте данные брались бы из базы или CSV.
-    # Для демонстрации мы используем фиктивные данные.
-    # Если у вас есть реальные исторические данные, замените этот блок.
-    
-    # Синтетические данные: температура от 15 до 35, продажи от 50 до 10 (чем жарче, тем меньше продаж)
+    """Обучение простой линейной регрессии на синтетических данных."""
     import numpy as np
     np.random.seed(42)
     temperatures = np.linspace(15, 35, 100)
@@ -87,13 +90,11 @@ def train_model(**kwargs):
     model = LinearRegression()
     model.fit(X, y)
     
-    # Сохраняем модель с помощью joblib
     joblib.dump(model, MODEL_PATH)
     print(f"Модель сохранена в {MODEL_PATH}")
 
 def save_model_info(**kwargs):
-    """Сохранение дополнительной информации о модели (опционально)."""
-    # Можем сохранить метрики или просто подтверждение
+    """Сохранение информации о модели."""
     with open(f"{DATA_DIR}/model_info.txt", 'w') as f:
         f.write(f"Модель обучена {datetime.now()}\n")
         f.write(f"Использованы синтетические данные\n")
@@ -114,7 +115,7 @@ with DAG(
     dag_id='variant_16_dubai',
     default_args=default_args,
     description='ETL для прогноза погоды в Дубай и подсчёта жарких дней',
-    schedule_interval=None,  # запуск только по триггеру
+    schedule_interval=None,
     catchup=False,
     tags=['umbrella', 'dubai', 'variant_16_dubai'],
 ) as dag:
@@ -141,5 +142,4 @@ with DAG(
     
     end = DummyOperator(task_id='end')
     
-    # Определяем зависимости
     start >> fetch >> train >> save_info >> end
