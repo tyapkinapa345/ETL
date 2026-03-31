@@ -88,6 +88,8 @@ TEMPERATURE_THRESHOLD = 30
 
 ![Graph View DAG](screenshots/real_umbrella_dubai.png)
 ![Ganta View DAG](screenshots/Ganta_real_umbrella_dubai.png)
+![Task View DAG](screenshots/umbrella_task.png)
+
 
 ### 3.2. Результаты выполнения
 
@@ -100,18 +102,7 @@ TEMPERATURE_THRESHOLD = 30
 - `model_info.txt` – информация о модели
 
 
-## 4. ML Аналитика (Jupyter Notebook)
-[Выполненная работа](https://colab.research.google.com/drive/1RYw_O41IozTZ8Q5bDlqhkJq6TWUOLDpd?usp=sharing)
-
-Файл `ml_model.pkl` скопирован с виртуальной машины на локальный компьютер и загружен в Google Colab для выполнения прогноза.
-
-
-**Вывод:**
-
-- Средняя температура: **23.3°C**
-- Прогнозируемые продажи: **82.89** (условных единиц)
-
-## 5. Визуализация в Streamlit
+## 4. Визуализация в Streamlit
 
 Дополнительно разработано Streamlit-приложение `app/app.py`, которое отображает:
 
@@ -122,8 +113,15 @@ TEMPERATURE_THRESHOLD = 30
 
 Приложение запущено в контейнере и доступно по адресу `http://localhost:8501`.
 ![Streamlit dashboard](screenshots/Streamlit_1.png)
-![Streamlit dashboard](screenshots/Streamlit_3.png)
-![Streamlit dashboard](screenshots/Streamlit_2.png)
+
+## 4. ML Аналитика (Jupyter Notebook)
+[Выполненная работа](https://colab.research.google.com/drive/1RYw_O41IozTZ8Q5bDlqhkJq6TWUOLDpd?usp=sharing)
+
+Файл `ml_model.pkl` скопирован с виртуальной машины на локальный компьютер и загружен в Google Colab для выполнения прогноза.
+
+**Вывод:**
+Средняя температура за 3 дня: 37.6°C
+Прогнозируемые продажи: 54.72 ед.
 
 ## 6. Заключение
 
