@@ -21,20 +21,33 @@ API_URL = "https://ll.thespacedevs.com/2.3.0/launches/upcoming/?format=json&mode
 ERROR_LOG_FILE = "/opt/airflow/logs/error_log.txt"   # сохраняется на хосте в ./logs/
 
 # --- Задание 2: Проверка доступности сервера ---
+import os
+from datetime import datetime
+
 def check_server_availability():
-    """Выполняет HEAD-запрос к API, при ошибке пишет в error_log.txt и падает."""
+    """Выполняет HEAD-запрос и сохраняет статус в server_status.txt"""
     try:
         resp = requests.head(API_URL, timeout=10)
         resp.raise_for_status()
-        logging.info(f"Сервер доступен, статус: {resp.status_code}")
+        status = "OK"
+        status_msg = f"✅ Сервер доступен (статус {resp.status_code})"
+        logging.info(status_msg)
     except Exception as e:
-        error_msg = f"{datetime.now()} - Ошибка доступности {API_URL}: {str(e)}"
-        logging.error(error_msg)
-        # Логируем в файл на хосте
+        status = "ERROR"
+        status_msg = f"❌ Ошибка доступности {API_URL}: {str(e)}"
+        logging.error(status_msg)
+        # Логируем ошибку в error_log.txt
         pathlib.Path(ERROR_LOG_FILE).parent.mkdir(parents=True, exist_ok=True)
         with open(ERROR_LOG_FILE, "a") as f:
-            f.write(error_msg + "\n")
+            f.write(f"{datetime.now()} - {status_msg}\n")
         raise
+
+    # Сохраняем статус проверки в отдельный файл (для дашборда)
+    status_path = f"{DATA_DIR}/server_status.txt"
+    with open(status_path, "w") as f:
+        f.write(f"Последняя проверка: {datetime.now()}\n")
+        f.write(f"Статус: {status}\n")
+        f.write(f"Детали: {status_msg}\n")raise
 
 # --- Загрузка JSON (как в исходном DAG, но с обработкой ошибок) ---
 import random
@@ -190,5 +203,10 @@ notify = BashOperator(
     dag=dag,
 )
 
+ensure_error_log = BashOperator(
+    task_id="ensure_error_log",
+    bash_command=f"touch {ERROR_LOG_FILE} && chmod 664 {ERROR_LOG_FILE}",
+    dag=dag,
+)
 # --- Порядок выполнения (учитываем проверку доступности) ---
 clean_data >> check_server >> download_json >> download_images >> report_domains >> notify
