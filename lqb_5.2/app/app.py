@@ -93,22 +93,17 @@ st.header("4. Проверка доступности сервера (задан
 # Создадим отдельный файл status.txt в data/, если он не существует.
 # В DAG мы не сохраняли статус, поэтому покажем информацию из error_log.txt.
 
-if os.path.exists(ERROR_LOG):
-    with open(ERROR_LOG, "r") as f:
-        error_content = f.read()
-    if "Ошибка доступности" in error_content:
-        st.error("❌ Последняя проверка: сервер недоступен (ошибка в логе).")
-        with st.expander("Показать подробности"):
-            st.text(error_content)
-    else:
-        st.success("✅ Сервер доступен (ошибок доступности не зафиксировано).")
+status_file = f"{DATA_DIR}/server_status.txt"
+if os.path.exists(status_file):
+    with open(status_file, "r") as f:
+        status_content = f.read()
+    st.text(status_content)
 else:
-    st.info("Лог ошибок отсутствует. Возможно, DAG ещё не запускался.")
-
-st.markdown("---")
+    st.warning("Файл со статусом проверки отсутствует. Запустите DAG для сохранения результата.")
 
 # ========== Секция 5: Логирование ошибок (Задание 3) ==========
 st.header("5. Логирование ошибок (задание 3)")
+
 if os.path.exists(ERROR_LOG):
     with open(ERROR_LOG, "r") as f:
         errors = f.read()
@@ -116,6 +111,6 @@ if os.path.exists(ERROR_LOG):
         st.warning("⚠️ Обнаружены ошибки в процессе работы:")
         st.text(errors)
     else:
-        st.success("✅ Ошибок не зафиксировано.")
+        st.success("✅ Ошибок не зафиксировано. Лог-файл существует, логирование работает.")
 else:
-    st.info("Файл error_log.txt отсутствует. Запустите DAG для генерации логов.")
+    st.info("Файл error_log.txt отсутствует. Запустите DAG для создания лога.")
