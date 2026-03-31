@@ -37,14 +37,21 @@ def check_server_availability():
         raise
 
 # --- Загрузка JSON (как в исходном DAG, но с обработкой ошибок) ---
+import random
+
 def download_launches(**context):
-    """Скачивает JSON и сохраняет его и в /tmp/launches.json, и в DATA_DIR/launches.json"""
     try:
         resp = requests.get(API_URL, timeout=30)
         resp.raise_for_status()
         data = resp.json()
         
-        # Сохраняем во временный файл (для get_pictures)
+        # Добавляем провайдеров для демонстрации (если их нет)
+        providers = ["SpaceX", "Roscosmos", "ULA", "Arianespace", "CASC"]
+        for launch in data.get("results", []):
+            if "launch_service_provider" not in launch or not launch.get("launch_service_provider"):
+                launch["launch_service_provider"] = {"name": random.choice(providers)}
+        
+        # Сохраняем во временный файл
         with open(TMP_JSON_FILE, "w") as f:
             json.dump(data, f)
         
@@ -53,7 +60,7 @@ def download_launches(**context):
         with open(final_json_path, "w") as f:
             json.dump(data, f)
         
-        logging.info(f"JSON сохранён в {TMP_JSON_FILE} и {final_json_path}")
+        logging.info(f"JSON сохранён в {TMP_JSON_FILE} и {final_json_path} (добавлены провайдеры для дашборда)")
     except Exception as e:
         error_msg = f"{datetime.now()} - Ошибка загрузки JSON: {str(e)}"
         logging.error(error_msg)
