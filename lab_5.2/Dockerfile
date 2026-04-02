@@ -1,3 +1,26 @@
+
+ => [ 4/10] RUN apt-get update -y && apt-get install -y --no-install-recommends     build-essential  440.2s
+ => ERROR [ 5/10] RUN pip install --no-cache-dir --upgrade pip setuptools wheel                        0.3s
+------
+ > [ 5/10] RUN pip install --no-cache-dir --upgrade pip setuptools wheel:
+0.257 
+0.258 You are running pip as root. Please use 'airflow' user to run pip!
+0.258 
+0.258 See: https://airflow.apache.org/docs/docker-stack/build.html#adding-a-new-pypi-package
+0.258 
+------
+Dockerfile:68
+--------------------
+  66 |     # УСТАНОВКА PYTHON ПАКЕТОВ
+  67 |     # ============================================
+  68 | >>> RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+  69 |     
+  70 |     # Установка зависимостей (без точных версий для гибкости)
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/bash -o pipefail -o errexit -o nounset -o nolog -c pip install --no-cache-dir --upgrade pip setuptools wheel" did not complete successfully: exit code: 1
+
+
+
 # ============================================
 # Dockerfile для ETL Workshop 2026 (Упрощённый)
 # Вариант 16: Rocket Launch Analytics
