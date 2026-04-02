@@ -1,22 +1,3 @@
- => [ 6/10] RUN pip install --no-cache-dir     apache-airflow-providers-http     apache-airflow-pro  416.7s
- => ERROR [ 7/10] RUN mkdir -p /opt/airflow/data /opt/airflow/logs /opt/airflow/app /opt/airflow/ml    0.5s
-------
- > [ 7/10] RUN mkdir -p /opt/airflow/data /opt/airflow/logs /opt/airflow/app /opt/airflow/ml     && chown -R airflow:airflow /opt/airflow     && chmod -R 775 /opt/airflow/data     && chmod -R 775 /opt/airflow/logs     && chmod -R 775 /opt/airflow/app:
-0.417 chown: invalid group: ‘airflow:airflow’
-------
-Dockerfile:92
---------------------
-  91 |     USER root
-  92 | >>> RUN mkdir -p /opt/airflow/data /opt/airflow/logs /opt/airflow/app /opt/airflow/ml \
-  93 | >>>     && chown -R airflow:airflow /opt/airflow \
-  94 | >>>     && chmod -R 775 /opt/airflow/data \
-  95 | >>>     && chmod -R 775 /opt/airflow/logs \
-  96 | >>>     && chmod -R 775 /opt/airflow/app
-  97 |     
---------------------
-ERROR: failed to build: failed to solve: process "/bin/bash -o pipefail -o errexit -o nounset -o nolog -c mkdir -p /opt/airflow/data /opt/airflow/logs /opt/airflow/app /opt/airflow/ml     && chown -R airflow:airflow /opt/airflow     && chmod -R 775 /opt/airflow/data     && chmod -R 775 /opt/airflow/logs     && chmod -R 775 /opt/airflow/app" did not complete successfully: exit code: 1
-
-
 # ============================================
 # Dockerfile для ETL Workshop 2026
 # Вариант 16: Rocket Launch Analytics
@@ -37,15 +18,14 @@ LABEL description="ETL Pipeline with ML and Streamlit for Variant 16"
 USER root
 
 # ============================================
-# ИСПРАВЛЕНИЕ ВРЕМЕНИ И РЕПОЗИТОРИЕВ
+# ИСПРАВЛЕНИЕ ВРЕМЕНИ
 # ============================================
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
-    ntpdate \
-    ca-certificates \
+    ntpdate ca-certificates \
     && ntpdate -u pool.ntp.org || true \
     && rm -rf /var/lib/apt/lists/*
 
-# Удаление проблемных источников
+# Удаление проблемных репозиториев
 RUN rm -f /etc/apt/sources.list.d/microsoft-prod.list \
     /etc/apt/sources.list.d/pgdg.list \
     /etc/apt/sources.list.d/mariadb.list 2>/dev/null || true
@@ -54,22 +34,13 @@ RUN rm -f /etc/apt/sources.list.d/microsoft-prod.list \
 # СИСТЕМНЫЕ ЗАВИСИМОСТИ
 # ============================================
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
-    build-essential \
-    gcc \
-    libgl1-mesa-glx \
-    libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender-dev \
-    iputils-ping \
-    dnsutils \
-    curl \
-    jq \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+    build-essential gcc \
+    libgl1-mesa-glx libglib2.0-0 libsm6 libxext6 libxrender-dev \
+    iputils-ping dnsutils curl jq \
+    && rm -rf /var/lib/apt/lists/* && apt-get clean
 
 # ============================================
-# ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ ДЛЯ PIP
+# ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ
 # ============================================
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -77,39 +48,31 @@ ENV PIP_NO_CACHE_DIR=1
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 
 # ============================================
-# ПЕРЕКЛЮЧЕНИЕ НА AIRFLOW USER ДЛЯ PIP
+# ПЕРЕКЛЮЧЕНИЕ НА AIRFLOW USER (UID 50000)
 # ============================================
-USER airflow
+USER 50000
 
 # ============================================
-# УСТАНОВКА PYTHON ПАКЕТОВ (как airflow user!)
+# УСТАНОВКА PYTHON ПАКЕТОВ (как пользователь 50000)
 # ============================================
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 RUN pip install --no-cache-dir \
     apache-airflow-providers-http \
     apache-airflow-providers-postgres \
-    requests \
-    pandas \
-    numpy \
-    pillow \
-    torch \
-    torchvision \
-    transformers \
-    streamlit \
-    jupyter \
-    notebook \
-    dnspython \
-    python-dotenv \
-    pyyaml \
-    matplotlib
+    requests pandas numpy pillow \
+    torch torchvision transformers \
+    streamlit jupyter notebook \
+    dnspython python-dotenv pyyaml matplotlib
 
 # ============================================
 # СОЗДАНИЕ ДИРЕКТОРИЙ (возвращаемся к root)
 # ============================================
 USER root
+
+# Используем числовые ID: 50000 = airflow user, 0 = root group
 RUN mkdir -p /opt/airflow/data /opt/airflow/logs /opt/airflow/app /opt/airflow/ml \
-    && chown -R airflow:airflow /opt/airflow \
+    && chown -R 50000:0 /opt/airflow \
     && chmod -R 775 /opt/airflow/data \
     && chmod -R 775 /opt/airflow/logs \
     && chmod -R 775 /opt/airflow/app
@@ -117,14 +80,15 @@ RUN mkdir -p /opt/airflow/data /opt/airflow/logs /opt/airflow/app /opt/airflow/m
 # ============================================
 # ФИНАЛЬНЫЙ USER И WORKDIR
 # ============================================
-USER airflow
+USER 50000
 WORKDIR /opt/airflow
 
 # ============================================
 # КОПИРОВАНИЕ ФАЙЛОВ ПРОЕКТА
 # ============================================
-COPY --chown=airflow:airflow app/ /opt/airflow/app/
-COPY --chown=airflow:airflow ml.ipynb /opt/airflow/ml/
+# --chown=50000:0 использует числовые ID
+COPY --chown=50000:0 app/ /opt/airflow/app/
+COPY --chown=50000:0 ml.ipynb /opt/airflow/ml/
 
 # ============================================
 # ПОРТЫ
