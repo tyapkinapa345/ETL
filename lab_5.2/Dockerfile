@@ -1,25 +1,18 @@
-dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ sudo docker compose up -d
-[sudo] password for dev: 
-WARN[0000] /home/dev/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
-[+] up 16/16
- ✔ Image postgres:13            Pulled                                                                 29.9s
- ✔ Network etl-workshop-network Created                                                                0.2s
-[+] up 22/22ound orphan containers ([business_case_rocket_26-scheduler-1 business_case_rocket_26-webserver-1
- ✔ Image postgres:13            Pulled                                                                 29.9s
- ✔ Network etl-workshop-network Created                                                                0.2s
- ✔ Volume etl-postgres-data     Created                                                                0.0s
- ✔ Container postgres-airflow   Healthy                                                                6.7s
- ✔ Container airflow-webserver  Created                                                                0.1s
- ✔ Container airflow-scheduler  Created                                                                0.1s
- ✔ Container jupyter-ml         Created                                                                0.1s
- ✔ Container streamlit-app      Created                                                                0.1s
-Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint airflow-webserver (c187dba2e9ef8d99c8fca248e399f64a205ee2df90aa4cd8a54368acedf410aa): Bind for 0.0.0.0:8080 failed: port is already allocated
-dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ sudo docker compose up -d
-WARN[0000] /home/dev/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
-WARN[0000] Found orphan containers ([business_case_rocket_26-scheduler-1 business_case_rocket_26-webserver-1]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up. 
-[+] up 2/2
- ✔ Container postgres-airflow  Healthy                                                                  0.5s
- ✔ Container airflow-scheduler Running    
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ sudo docker logs airflow-webserver --tail 50
+[2026-04-02T20:53:37.455+0000] {configuration.py:2065} INFO - Creating new FAB webserver config file in: /opt/airflow/webserver_config.py
+ERROR: You need to initialize the database. Please run `airflow db init`. Make sure the command is run using Airflow version 2.8.1.
+ERROR: You need to initialize the database. Please run `airflow db init`. Make sure the command is run using Airflow version 2.8.1.
+ERROR: You need to initialize the database. Please run `airflow db init`. Make sure the command is run using Airflow version 2.8.1.
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ sudo docker ps | grep postgres
+2bda220afb21   postgres:13                            "docker-entrypoint.s…"   5 minutes ago        Up 5 minutes (healthy)                  0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp                       postgres-airflow
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ sudo chown -R 50000:0 data logs
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ sudo chmod -R 755 data logs
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ sudo docker exec airflow-webserver python -m py_compile /opt/airflow/dags/download_rocket_launches.py
+[Errno 13] Permission denied: '/opt/airflow/dags/__pycache__'dev@dev-vm:~/Downloads/lab_etl/data_for_labs/l
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ sudo docker compose restart airflow-webserver airflow-scheduler
+[+] restart 0/2
+ ⠴ Container airflow-scheduler Restarting                                                              11.5s
+ ⠴ Container airflow-webserver Restarting                                                              11.5s
  
  
 # ============================================
