@@ -1,3 +1,22 @@
+ => [ 6/10] RUN pip install --no-cache-dir     apache-airflow-providers-http     apache-airflow-pro  416.7s
+ => ERROR [ 7/10] RUN mkdir -p /opt/airflow/data /opt/airflow/logs /opt/airflow/app /opt/airflow/ml    0.5s
+------
+ > [ 7/10] RUN mkdir -p /opt/airflow/data /opt/airflow/logs /opt/airflow/app /opt/airflow/ml     && chown -R airflow:airflow /opt/airflow     && chmod -R 775 /opt/airflow/data     && chmod -R 775 /opt/airflow/logs     && chmod -R 775 /opt/airflow/app:
+0.417 chown: invalid group: ‘airflow:airflow’
+------
+Dockerfile:92
+--------------------
+  91 |     USER root
+  92 | >>> RUN mkdir -p /opt/airflow/data /opt/airflow/logs /opt/airflow/app /opt/airflow/ml \
+  93 | >>>     && chown -R airflow:airflow /opt/airflow \
+  94 | >>>     && chmod -R 775 /opt/airflow/data \
+  95 | >>>     && chmod -R 775 /opt/airflow/logs \
+  96 | >>>     && chmod -R 775 /opt/airflow/app
+  97 |     
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/bash -o pipefail -o errexit -o nounset -o nolog -c mkdir -p /opt/airflow/data /opt/airflow/logs /opt/airflow/app /opt/airflow/ml     && chown -R airflow:airflow /opt/airflow     && chmod -R 775 /opt/airflow/data     && chmod -R 775 /opt/airflow/logs     && chmod -R 775 /opt/airflow/app" did not complete successfully: exit code: 1
+
+
 # ============================================
 # Dockerfile для ETL Workshop 2026
 # Вариант 16: Rocket Launch Analytics
