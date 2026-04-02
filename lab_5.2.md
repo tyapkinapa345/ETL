@@ -1,3 +1,57 @@
+ => ERROR [2/9] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential  26.3s
+------
+ > [2/9] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     g++     libgl1-mesa-glx     libglib2.0-0     libsm6     libxext6     libxrender-dev     libgomp1     iputils-ping     dnsutils     curl     wget     jq     vim     libzmq3-dev     && rm -rf /var/lib/apt/lists/*     && apt-get clean:
+1.104 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+1.104 Ign:2 https://packages.microsoft.com/debian/12/prod bookworm InRelease
+1.141 Get:3 https://apt.postgresql.org/pub/repos/apt bookworm-pgdg InRelease [180 kB]
+1.248 Get:4 https://archive.mariadb.org/mariadb-10.11/repo/debian bookworm InRelease [4628 B]
+1.302 Get:5 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+1.382 Get:6 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+1.666 Get:7 http://deb.debian.org/debian bookworm/main amd64 Packages [8792 kB]
+2.125 Get:8 https://archive.mariadb.org/mariadb-10.11/repo/debian bookworm/main arm64 Packages [35.2 kB]
+2.341 Get:9 https://archive.mariadb.org/mariadb-10.11/repo/debian bookworm/main amd64 Packages [41.6 kB]
+2.392 Ign:2 https://packages.microsoft.com/debian/12/prod bookworm InRelease
+4.529 Ign:2 https://packages.microsoft.com/debian/12/prod bookworm InRelease
+8.678 Err:2 https://packages.microsoft.com/debian/12/prod bookworm InRelease
+8.678   Certificate verification failed: The certificate is NOT trusted. The received OCSP status response is invalid.  Could not handshake: Error in the certificate verification. [IP: 13.107.246.53 443]
+23.70 Reading package lists...
+25.94 W: https://apt.postgresql.org/pub/repos/apt/dists/bookworm-pgdg/InRelease: Key is stored in legacy trusted.gpg keyring (/etc/apt/trusted.gpg), see the DEPRECATION section in apt-key(8) for details.
+25.94 E: Release file for https://apt.postgresql.org/pub/repos/apt/dists/bookworm-pgdg/InRelease is not valid yet (invalid for another 1d 5h 13min 59s). Updates for this repository will not be applied.
+25.94 E: Release file for http://deb.debian.org/debian/dists/bookworm-updates/InRelease is not valid yet (invalid for another 2d 1h 49min 30s). Updates for this repository will not be applied.
+25.94 E: Release file for http://deb.debian.org/debian-security/dists/bookworm-security/InRelease is not valid yet (invalid for another 2d 5h 2min 29s). Updates for this repository will not be applied.
+------
+Dockerfile:24
+--------------------
+  23 |     # ============================================
+  24 | >>> RUN apt-get update && apt-get install -y --no-install-recommends \
+  25 | >>>     # Для компиляции Python пакетов
+  26 | >>>     build-essential \
+  27 | >>>     gcc \
+  28 | >>>     g++ \
+  29 | >>>     # Для работы с изображениями
+  30 | >>>     libgl1-mesa-glx \
+  31 | >>>     libglib2.0-0 \
+  32 | >>>     libsm6 \
+  33 | >>>     libxext6 \
+  34 | >>>     libxrender-dev \
+  35 | >>>     libgomp1 \
+  36 | >>>     # Для сетевых проверок (ping, DNS)
+  37 | >>>     iputils-ping \
+  38 | >>>     dnsutils \
+  39 | >>>     # Для загрузки данных
+  40 | >>>     curl \
+  41 | >>>     wget \
+  42 | >>>     # Для работы с файлами
+  43 | >>>     jq \
+  44 | >>>     vim \
+  45 | >>>     # Для Jupyter
+  46 | >>>     libzmq3-dev \
+  47 | >>>     && rm -rf /var/lib/apt/lists/* \
+  48 | >>>     && apt-get clean
+  49 |     
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/bash -o pipefail -o errexit -o nounset -o nolog -c apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     g++     libgl1-mesa-glx     libglib2.0-0     libsm6     libxext6     libxrender-dev     libgomp1     iputils-ping     dnsutils     curl     wget     jq     vim     libzmq3-dev     && rm -rf /var/lib/apt/lists/*     && apt-get clean" did not complete successfully: exit code: 100
+
 # Лабораторная работа 5.2 – Разработка алгоритмов для трансформации данных. Airflow DAG
 
 |Вариант|Задание 1 (Анализ/ETL)|Задание 2 (Обработка/Логика)|Задание 3 (Отчетность/Метрики)|
