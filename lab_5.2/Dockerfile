@@ -1,28 +1,5 @@
-
- => [ 4/10] RUN apt-get update -y && apt-get install -y --no-install-recommends     build-essential  440.2s
- => ERROR [ 5/10] RUN pip install --no-cache-dir --upgrade pip setuptools wheel                        0.3s
-------
- > [ 5/10] RUN pip install --no-cache-dir --upgrade pip setuptools wheel:
-0.257 
-0.258 You are running pip as root. Please use 'airflow' user to run pip!
-0.258 
-0.258 See: https://airflow.apache.org/docs/docker-stack/build.html#adding-a-new-pypi-package
-0.258 
-------
-Dockerfile:68
---------------------
-  66 |     # УСТАНОВКА PYTHON ПАКЕТОВ
-  67 |     # ============================================
-  68 | >>> RUN pip install --no-cache-dir --upgrade pip setuptools wheel
-  69 |     
-  70 |     # Установка зависимостей (без точных версий для гибкости)
---------------------
-ERROR: failed to build: failed to solve: process "/bin/bash -o pipefail -o errexit -o nounset -o nolog -c pip install --no-cache-dir --upgrade pip setuptools wheel" did not complete successfully: exit code: 1
-
-
-
 # ============================================
-# Dockerfile для ETL Workshop 2026 (Упрощённый)
+# Dockerfile для ETL Workshop 2026
 # Вариант 16: Rocket Launch Analytics
 # ============================================
 
@@ -36,49 +13,44 @@ LABEL version="1.0"
 LABEL description="ETL Pipeline with ML and Streamlit for Variant 16"
 
 # ============================================
-# ПЕРЕКЛЮЧЕНИЕ НА ROOT
+# ПЕРЕКЛЮЧЕНИЕ НА ROOT ДЛЯ СИСТЕМНЫХ ПАКЕТОВ
 # ============================================
 USER root
 
 # ============================================
 # ИСПРАВЛЕНИЕ ВРЕМЕНИ И РЕПОЗИТОРИЕВ
 # ============================================
-# Синхронизация времени (решает проблему "not valid yet")
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
     ntpdate \
     ca-certificates \
     && ntpdate -u pool.ntp.org || true \
     && rm -rf /var/lib/apt/lists/*
 
-# Удаление проблемных источников пакетов из базового образа
+# Удаление проблемных источников
 RUN rm -f /etc/apt/sources.list.d/microsoft-prod.list \
     /etc/apt/sources.list.d/pgdg.list \
     /etc/apt/sources.list.d/mariadb.list 2>/dev/null || true
 
 # ============================================
-# МИНИМАЛЬНЫЕ СИСТЕМНЫЕ ПАКЕТЫ
+# СИСТЕМНЫЕ ЗАВИСИМОСТИ
 # ============================================
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
-    # Для компиляции
     build-essential \
     gcc \
-    # Для изображений (Pillow)
     libgl1-mesa-glx \
     libglib2.0-0 \
     libsm6 \
     libxext6 \
     libxrender-dev \
-    # Для сетевых проверок
     iputils-ping \
     dnsutils \
-    # Утилиты
     curl \
     jq \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
 # ============================================
-# ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ
+# ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ ДЛЯ PIP
 # ============================================
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -86,11 +58,15 @@ ENV PIP_NO_CACHE_DIR=1
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 
 # ============================================
-# УСТАНОВКА PYTHON ПАКЕТОВ
+# ПЕРЕКЛЮЧЕНИЕ НА AIRFLOW USER ДЛЯ PIP
+# ============================================
+USER airflow
+
+# ============================================
+# УСТАНОВКА PYTHON ПАКЕТОВ (как airflow user!)
 # ============================================
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
-# Установка зависимостей (без точных версий для гибкости)
 RUN pip install --no-cache-dir \
     apache-airflow-providers-http \
     apache-airflow-providers-postgres \
@@ -110,8 +86,9 @@ RUN pip install --no-cache-dir \
     matplotlib
 
 # ============================================
-# НАСТРОЙКА ПРАВ И ДИРЕКТОРИЙ
+# СОЗДАНИЕ ДИРЕКТОРИЙ (возвращаемся к root)
 # ============================================
+USER root
 RUN mkdir -p /opt/airflow/data /opt/airflow/logs /opt/airflow/app /opt/airflow/ml \
     && chown -R airflow:airflow /opt/airflow \
     && chmod -R 775 /opt/airflow/data \
@@ -119,13 +96,9 @@ RUN mkdir -p /opt/airflow/data /opt/airflow/logs /opt/airflow/app /opt/airflow/m
     && chmod -R 775 /opt/airflow/app
 
 # ============================================
-# ПЕРЕКЛЮЧЕНИЕ НА AIRFLOW USER
+# ФИНАЛЬНЫЙ USER И WORKDIR
 # ============================================
 USER airflow
-
-# ============================================
-# РАБОЧАЯ ДИРЕКТОРИЯ
-# ============================================
 WORKDIR /opt/airflow
 
 # ============================================
@@ -143,7 +116,7 @@ EXPOSE 8080 8501 8888
 # HEALTH CHECK
 # ============================================
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD python -c "import requests, pandas, torch; print('OK')" || exit 1
+    CMD python -c "import requests, pandas; print('OK')" || exit 1
 
 # ============================================
 # ENTRYPOINT
