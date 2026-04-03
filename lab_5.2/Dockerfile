@@ -1,20 +1,5 @@
-dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ sudo docker logs airflow-webserver --tail 50
-[2026-04-02T20:53:37.455+0000] {configuration.py:2065} INFO - Creating new FAB webserver config file in: /opt/airflow/webserver_config.py
-ERROR: You need to initialize the database. Please run `airflow db init`. Make sure the command is run using Airflow version 2.8.1.
-ERROR: You need to initialize the database. Please run `airflow db init`. Make sure the command is run using Airflow version 2.8.1.
-ERROR: You need to initialize the database. Please run `airflow db init`. Make sure the command is run using Airflow version 2.8.1.
-dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ sudo docker ps | grep postgres
-2bda220afb21   postgres:13                            "docker-entrypoint.s…"   5 minutes ago        Up 5 minutes (healthy)                  0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp                       postgres-airflow
-dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ sudo chown -R 50000:0 data logs
-dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ sudo chmod -R 755 data logs
-dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ sudo docker exec airflow-webserver python -m py_compile /opt/airflow/dags/download_rocket_launches.py
-[Errno 13] Permission denied: '/opt/airflow/dags/__pycache__'dev@dev-vm:~/Downloads/lab_etl/data_for_labs/l
-dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ sudo docker compose restart airflow-webserver airflow-scheduler
-[+] restart 0/2
- ⠴ Container airflow-scheduler Restarting                                                              11.5s
- ⠴ Container airflow-webserver Restarting                                                              11.5s
- 
- 
+
+
 # ============================================
 # Dockerfile для ETL Workshop 2026
 # Вариант 16: Rocket Launch Analytics
