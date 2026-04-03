@@ -272,9 +272,10 @@ if file_status["server_ping"]:
                     for line in lines:
                         if line.strip():
                             st.text(line)
-                    if len(check.split("\n")) > 40:
-                        st.info(f"... ещё {len(check.split('\n')) - 40} строк (см. полный файл)")
-            
+                    lines = check.split('\n')
+                    if len(lines) > 40:
+                        remaining = len(lines) - 40
+                        st.info(f"... ещё {remaining} строк (см. полный файл)")
             if displayed == 0:
                 st.info("ℹ️ Нет проверок для отображения с текущими фильтрами")
         else:
