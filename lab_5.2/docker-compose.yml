@@ -1,3 +1,85 @@
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ docker compose up -d
+[+] up 8/8
+ ✔ Network business_case_rocket_26_etl-network  Created                                                      0.1ss
+ ✔ Volume business_case_rocket_26_postgres_data Created                                                      0.0ss
+ ✔ Container jupyter-ml                         Created                                                      0.1ss
+ ✔ Container streamlit-app                      Created                                                      0.1ss
+ ✔ Container postgres-airflow                   Healthy                                                      7.0ss
+ ✘ Container airflow-init                       Error service "airflow-init" didn't complete successful...   19.9s
+ ✔ Container airflow-scheduler                  Created                                                      0.0ss
+ ✔ Container airflow-webserver                  Created                                                      0.0ss
+service "airflow-init" didn't complete successfully: exit 2
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ docker compose logs airflow-init --tail=50
+airflow-init  | Usage: airflow [-h] GROUP_OR_COMMAND ...
+airflow-init  | 
+airflow-init  | Positional Arguments:
+airflow-init  |   GROUP_OR_COMMAND
+airflow-init  | 
+airflow-init  |     Groups
+airflow-init  |       config         View configuration
+airflow-init  |       connections    Manage connections
+airflow-init  |       dags           Manage DAGs
+airflow-init  |       db             Database operations
+airflow-init  |       jobs           Manage jobs
+airflow-init  |       pools          Manage pools
+airflow-init  |       providers      Display providers
+airflow-init  |       roles          Manage roles
+airflow-init  |       tasks          Manage tasks
+airflow-init  |       users          Manage users
+airflow-init  |       variables      Manage variables
+airflow-init  | 
+airflow-init  |     Commands:
+airflow-init  |       cheat-sheet    Display cheat sheet
+airflow-init  |       dag-processor  Start a standalone Dag Processor instance
+airflow-init  |       info           Show information about current Airflow and environment
+airflow-init  |       kerberos       Start a kerberos ticket renewer
+airflow-init  |       plugins        Dump information about loaded plugins
+airflow-init  |       rotate-fernet-key
+airflow-init  |                      Rotate encrypted connection credentials and variables
+airflow-init  |       scheduler      Start a scheduler instance
+airflow-init  |       standalone     Run an all-in-one copy of Airflow
+airflow-init  |       sync-perm      Update permissions for existing roles and optionally DAGs
+airflow-init  |       triggerer      Start a triggerer instance
+airflow-init  |       version        Show the version
+airflow-init  |       webserver      Start a Airflow webserver instance
+airflow-init  | 
+airflow-init  | Options:
+airflow-init  |   -h, --help         show this help message and exit
+airflow-init  | 
+airflow-init  | airflow command error: argument GROUP_OR_COMMAND: invalid choice: 'bash' (choose from 'cheat-sheet', 'config', 'connections', 'dag-processor', 'dags', 'db', 'info', 'jobs', 'kerberos', 'plugins', 'pools', 'providers', 'roles', 'rotate-fernet-key', 'scheduler', 'standalone', 'sync-perm', 'tasks', 'triggerer', 'users', 'variables', 'version', 'webserver'), see help above.
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ docker compose logs postgres --tail=30
+postgres-airflow  | 
+postgres-airflow  |     pg_ctl -D /var/lib/postgresql/data -l logfile start
+postgres-airflow  | 
+postgres-airflow  | waiting for server to start....2026-04-03 06:29:11.134 UTC [46] LOG:  starting PostgreSQL 13.23 (Debian 13.23-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+postgres-airflow  | 2026-04-03 06:29:11.151 UTC [46] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-airflow  | 2026-04-03 06:29:11.161 UTC [47] LOG:  database system was shut down at 2026-04-03 06:29:10 UTC
+postgres-airflow  | 2026-04-03 06:29:11.166 UTC [46] LOG:  database system is ready to accept connections
+postgres-airflow  |  done
+postgres-airflow  | server started
+postgres-airflow  | CREATE DATABASE
+postgres-airflow  | 
+postgres-airflow  | 
+postgres-airflow  | /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+postgres-airflow  | 
+postgres-airflow  | waiting for server to shut down....2026-04-03 06:29:11.588 UTC [46] LOG:  received fast shutdown request
+postgres-airflow  | 2026-04-03 06:29:11.594 UTC [46] LOG:  aborting any active transactions
+postgres-airflow  | 2026-04-03 06:29:11.596 UTC [46] LOG:  background worker "logical replication launcher" (PID 53) exited with exit code 1
+postgres-airflow  | 2026-04-03 06:29:11.613 UTC [48] LOG:  shutting down
+postgres-airflow  | 2026-04-03 06:29:11.643 UTC [46] LOG:  database system is shut down
+postgres-airflow  |  done
+postgres-airflow  | server stopped
+postgres-airflow  | 
+postgres-airflow  | PostgreSQL init process complete; ready for start up.
+postgres-airflow  | 
+postgres-airflow  | 2026-04-03 06:29:11.736 UTC [1] LOG:  starting PostgreSQL 13.23 (Debian 13.23-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+postgres-airflow  | 2026-04-03 06:29:11.736 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+postgres-airflow  | 2026-04-03 06:29:11.736 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+postgres-airflow  | 2026-04-03 06:29:11.745 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-airflow  | 2026-04-03 06:29:11.755 UTC [61] LOG:  database system was shut down at 2026-04-03 06:29:11 UTC
+postgres-airflow  | 2026-04-03 06:29:11.764 UTC [1] LOG:  database system is ready to accept connections
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ 
+
 services:
   postgres:
     image: postgres:13
