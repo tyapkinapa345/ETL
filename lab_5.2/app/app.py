@@ -397,7 +397,7 @@ if file_status["error_log_json"]:
                 use_container_width=True,
                 hide_index=True,
                 column_config={
-                    "url": st.column_config.LinkColumn("URL", max_width=200),
+                    "url": st.column_config.LinkColumn("URL"),
                     "error_message": st.column_config.TextColumn("Сообщение", width="large")
                 }
             )
