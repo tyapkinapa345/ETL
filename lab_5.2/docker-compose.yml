@@ -1,189 +1,114 @@
-# ============================================
-# Docker Compose для ETL Workshop 2026
-# Вариант 16: Rocket Launch Analytics
-# ============================================
-
 version: '3.8'
 
-# ============================================
-# СЕРВИСЫ
-# ============================================
 services:
-
-  # ------------------------------------------
-  # Apache Airflow Webserver
-  # ------------------------------------------
-  airflow-webserver:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: custom-airflow:slim-2.8.1-python3.11
-    container_name: airflow-webserver
-    restart: unless-stopped
-    environment:
-      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
-      - AIRFLOW__CORE__LOAD_EXAMPLES=False
-      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
-      - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
-      - AIRFLOW__CORE__FERNET_KEY=YourFernetKeyHere12345678901234567890123=
-      - AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT=120
-      - AIRFLOW__SCHEDULER__SCHEDULER_HEARTBEAT_SEC=30
-    volumes:
-      - ./dags:/opt/airflow/dags:rw
-      - ./data:/opt/airflow/data:rw
-      - ./logs:/opt/airflow/logs:rw
-      - ./app:/opt/airflow/app:rw
-    ports:
-      - "8080:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    command: webserver
-    networks:
-      - etl-network
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
-
-  # ------------------------------------------
-  # Apache Airflow Scheduler
-  # ------------------------------------------
-  airflow-scheduler:
-    image: custom-airflow:slim-2.8.1-python3.11
-    container_name: airflow-scheduler
-    restart: unless-stopped
-    environment:
-      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
-      - AIRFLOW__CORE__LOAD_EXAMPLES=False
-      - AIRFLOW__CORE__FERNET_KEY=YourFernetKeyHere12345678901234567890123=
-      - AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT=120
-    volumes:
-      - ./dags:/opt/airflow/dags:rw
-      - ./data:/opt/airflow/data:rw
-      - ./logs:/opt/airflow/logs:rw
-    depends_on:
-      postgres:
-        condition: service_healthy
-    command: scheduler
-    networks:
-      - etl-network
-    healthcheck:
-      test: ["CMD-SHELL", "airflow jobs check --job-type SchedulerJob --hostname $${HOSTNAME} || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
-
-  # ------------------------------------------
-  # PostgreSQL для Airflow
-  # ------------------------------------------
   postgres:
     image: postgres:13
     container_name: postgres-airflow
-    restart: unless-stopped
     environment:
-      - POSTGRES_USER=airflow
-      - POSTGRES_PASSWORD=airflow
-      - POSTGRES_DB=airflow
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    networks:
-      - etl-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U airflow -d airflow"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U airflow"]
+      interval: 5s
       timeout: 5s
       retries: 5
-      start_period: 10s
+    networks:
+      - etl-network
 
-  # ------------------------------------------
-  # Jupyter Notebook для ML
-  # ------------------------------------------
+  airflow-init:
+    image: custom-airflow:slim-2.8.1-python3.11
+    container_name: airflow-init
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./data:/opt/airflow/data
+      - ./logs:/opt/airflow/logs
+    command: >
+      bash -c "airflow db init && airflow users create
+      --username admin --password admin --firstname Admin
+      --lastname User --role Admin --email admin@example.com"
+    networks:
+      - etl-network
+
+  airflow-webserver:
+    image: custom-airflow:slim-2.8.1-python3.11
+    container_name: airflow-webserver
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__WEBSERVER__SECRET_KEY: dummy
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./data:/opt/airflow/data
+      - ./logs:/opt/airflow/logs
+    ports:
+      - "8080:8080"
+    command: webserver
+    networks:
+      - etl-network
+
+  airflow-scheduler:
+    image: custom-airflow:slim-2.8.1-python3.11
+    container_name: airflow-scheduler
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./data:/opt/airflow/data
+      - ./logs:/opt/airflow/logs
+    command: scheduler
+    networks:
+      - etl-network
+
   jupyter:
     image: custom-airflow:slim-2.8.1-python3.11
     container_name: jupyter-ml
-    restart: unless-stopped
-    environment:
-      - JUPYTER_TOKEN=
-      - JUPYTER_ALLOW_INSECURE_WRITES=1
-      - PYTHONDONTWRITEBYTECODE=1
+    user: "50000:0"
+    working_dir: /opt/airflow
     volumes:
-      - .:/home/jovyan/work:rw
-      - ./data:/opt/airflow/data:rw
-      - ./logs:/opt/airflow/logs:rw
-    working_dir: /home/jovyan/work
+      - .:/opt/airflow
     ports:
       - "8888:8888"
-    command: >
-      jupyter notebook 
-      --ip=0.0.0.0 
-      --port=8888 
-      --no-browser 
-      --allow-root 
-      --NotebookApp.token='' 
-      --NotebookApp.password='' 
-      --NotebookApp.allow_origin='*'
+    command: jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password='' --notebook-dir=/opt/airflow
     networks:
       - etl-network
-    depends_on:
-      - airflow-webserver
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8888 || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
 
-  # ------------------------------------------
-  # Streamlit для аналитики
-  # ------------------------------------------
   streamlit:
     image: custom-airflow:slim-2.8.1-python3.11
     container_name: streamlit-app
-    restart: unless-stopped
+    user: "50000:0"
+    working_dir: /opt/airflow
     volumes:
-      - ./app:/opt/airflow/app:rw
-      - ./data:/opt/airflow/data:rw
-      - ./logs:/opt/airflow/logs:rw
+      - ./app:/opt/airflow/app
+      - ./data:/opt/airflow/data
+      - ./logs:/opt/airflow/logs
     ports:
       - "8501:8501"
-    working_dir: /opt/airflow
-    command: >
-      streamlit run app/app.py 
-      --server.address=0.0.0.0 
-      --server.port=8501 
-      --server.headless=true 
-      --browser.gatherUsageStats=false
+    command: streamlit run app/app.py --server.address=0.0.0.0 --server.port=8501 --server.headless=true
     networks:
       - etl-network
-    depends_on:
-      - airflow-webserver
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8501 || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
 
-# ============================================
-# СЕТИ
-# ============================================
 networks:
   etl-network:
     driver: bridge
-    name: etl-workshop-network
 
-# ============================================
-# ТОМА
-# ============================================
 volumes:
   postgres_data:
-    driver: local
-    name: etl-postgres-data
