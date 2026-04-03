@@ -1,3 +1,193 @@
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ docker compose ps
+NAME                IMAGE                                  COMMAND                  SERVICE             CREATED              STATUS                        PORTS
+airflow-scheduler   custom-airflow:slim-2.8.1-python3.11   "airflow scheduler"      airflow-scheduler   About a minute ago   Up 35 seconds (healthy)       8080/tcp, 8501/tcp, 8888/tcp
+airflow-webserver   custom-airflow:slim-2.8.1-python3.11   "airflow webserver"      airflow-webserver   About a minute ago   Up 35 seconds (healthy)       8501/tcp, 0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp, 8888/tcp
+postgres-airflow    postgres:13                            "docker-entrypoint.s…"   postgres            About a minute ago   Up About a minute (healthy)   5432/tcp
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ docker compose up -d
+[+] up 4/4
+ ✔ Container postgres-airflow  Healthy                                                                       1.5ss
+ ✔ Container airflow-scheduler Running                                                                       0.0ss
+ ✔ Container airflow-webserver Running                                                                       0.0ss
+ ✔ Container airflow-init      Exited                                                                        45.6s
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ docker compose ps -a
+NAME                IMAGE                                  COMMAND                   SERVICE             CREATED         STATUS                        PORTS
+airflow-init        custom-airflow:slim-2.8.1-python3.11   "/bin/bash -c '\n  se…"   airflow-init        2 minutes ago   Exited (0) 11 seconds ago     
+airflow-scheduler   custom-airflow:slim-2.8.1-python3.11   "airflow scheduler"       airflow-scheduler   2 minutes ago   Up About a minute (healthy)   8080/tcp, 8501/tcp, 8888/tcp
+airflow-webserver   custom-airflow:slim-2.8.1-python3.11   "airflow webserver"       airflow-webserver   2 minutes ago   Up About a minute (healthy)   8501/tcp, 0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp, 8888/tcp
+jupyter-ml          custom-airflow:slim-2.8.1-python3.11   "airflow jupyter not…"    jupyter             2 minutes ago   Exited (2) 34 seconds ago     
+postgres-airflow    postgres:13                            "docker-entrypoint.s…"    postgres            2 minutes ago   Up 2 minutes (healthy)        5432/tcp
+streamlit-app       custom-airflow:slim-2.8.1-python3.11   "airflow streamlit r…"    streamlit           2 minutes ago   Exited (2) 34 seconds ago     
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ docker compose logs  --tail=30
+streamlit-app  |       connections    Manage connections
+streamlit-app  |       dags           Manage DAGs
+streamlit-app  |       db             Database operations
+streamlit-app  |       jobs           Manage jobs
+streamlit-app  |       pools          Manage pools
+streamlit-app  |       providers      Display providers
+airflow-scheduler  |   ____________       _____________
+airflow-scheduler  |  ____    |__( )_________  __/__  /________      __
+airflow-scheduler  | ____  /| |_  /__  ___/_  /_ __  /_  __ \_ | /| / /
+airflow-scheduler  | ___  ___ |  / _  /   _  __/ _  / / /_/ /_ |/ |/ /
+airflow-scheduler  |  _/_/  |_/_/  /_/    /_/    /_/  \____/____/|__/
+airflow-scheduler  | /home/airflow/.local/lib/python3.11/site-packages/openlineage/client/transport/kafka.py:12 UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+airflow-scheduler  | [2026-04-03T06:39:14.538+0000] {task_context_logger.py:63} INFO - Task context logging is enabled
+airflow-scheduler  | [2026-04-03T06:39:14.539+0000] {executor_loader.py:115} INFO - Loaded executor: LocalExecutor
+airflow-scheduler  | [2026-04-03T06:39:14.685+0000] {scheduler_job_runner.py:808} INFO - Starting the scheduler
+airflow-scheduler  | [2026-04-03T06:39:14.687+0000] {scheduler_job_runner.py:815} INFO - Processing each file at most -1 times
+airflow-scheduler  | [2026-04-03 06:39:14 +0000] [15] [INFO] Starting gunicorn 21.2.0
+airflow-scheduler  | [2026-04-03 06:39:14 +0000] [15] [INFO] Listening at: http://[::]:8793 (15)
+airflow-scheduler  | [2026-04-03 06:39:14 +0000] [15] [INFO] Using worker: sync
+airflow-scheduler  | [2026-04-03 06:39:14 +0000] [16] [INFO] Booting worker with pid: 16
+airflow-scheduler  | [2026-04-03 06:39:14 +0000] [22] [INFO] Booting worker with pid: 22
+airflow-scheduler  | [2026-04-03T06:39:15.642+0000] {manager.py:169} INFO - Launched DagFileProcessorManager with pid: 154
+airflow-scheduler  | [2026-04-03T06:39:15.646+0000] {scheduler_job_runner.py:1619} INFO - Adopting or resetting orphaned tasks for active dag runs
+airflow-scheduler  | [2026-04-03T06:39:15.693+0000] {settings.py:60} INFO - Configured default timezone UTC
+streamlit-app      |       roles          Manage roles
+streamlit-app      |       tasks          Manage tasks
+streamlit-app      |       users          Manage users
+streamlit-app      |       variables      Manage variables
+streamlit-app      | 
+streamlit-app      |     Commands:
+streamlit-app      |       cheat-sheet    Display cheat sheet
+streamlit-app      |       dag-processor  Start a standalone Dag Processor instance
+streamlit-app      |       info           Show information about current Airflow and environment
+streamlit-app      |       kerberos       Start a kerberos ticket renewer
+streamlit-app      |       plugins        Dump information about loaded plugins
+streamlit-app      |       rotate-fernet-key
+streamlit-app      |                      Rotate encrypted connection credentials and variables
+streamlit-app      |       scheduler      Start a scheduler instance
+streamlit-app      |       standalone     Run an all-in-one copy of Airflow
+streamlit-app      |       sync-perm      Update permissions for existing roles and optionally DAGs
+streamlit-app      |       triggerer      Start a triggerer instance
+streamlit-app      |       version        Show the version
+streamlit-app      |       webserver      Start a Airflow webserver instance
+streamlit-app      | 
+streamlit-app      | Options:
+streamlit-app      |   -h, --help         show this help message and exit
+streamlit-app      | 
+streamlit-app      | airflow command error: argument GROUP_OR_COMMAND: invalid choice: 'streamlit' (choose from 'cheat-sheet', 'config', 'connections', 'dag-processor', 'dags', 'db', 'info', 'jobs', 'kerberos', 'plugins', 'pools', 'providers', 'roles', 'rotate-fernet-key', 'scheduler', 'standalone', 'sync-perm', 'tasks', 'triggerer', 'users', 'variables', 'version', 'webserver'), see help above.
+airflow-init       | [2026-04-03T06:39:07.755+0000] {override.py:1820} INFO - Added Permission can read on View Menus to role Admin
+airflow-init       | [2026-04-03T06:39:07.764+0000] {override.py:1769} INFO - Created Permission View: menu access on Resources
+airflow-init       | [2026-04-03T06:39:07.768+0000] {override.py:1820} INFO - Added Permission menu access on Resources to role Admin
+airflow-init       | [2026-04-03T06:39:07.788+0000] {override.py:1769} INFO - Created Permission View: can read on Permission Views
+airflow-init       | [2026-04-03T06:39:07.792+0000] {override.py:1820} INFO - Added Permission can read on Permission Views to role Admin
+airflow-init       | [2026-04-03T06:39:07.801+0000] {override.py:1769} INFO - Created Permission View: menu access on Permission Pairs
+airflow-init       | [2026-04-03T06:39:07.805+0000] {override.py:1820} INFO - Added Permission menu access on Permission Pairs to role Admin
+airflow-init       | /home/airflow/.local/lib/python3.11/site-packages/openlineage/client/transport/kafka.py:12 UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+airflow-init       | [2026-04-03T06:39:08.350+0000] {override.py:1458} INFO - Added user admin
+airflow-init       | User "admin" created with role "Admin"
+airflow-init       | Airflow init completed successfully.
+airflow-init       | Waiting for postgres...
+airflow-init       | postgres:5432 - accepting connections
+airflow-init       | Initializing Airflow DB...
+airflow-init       | /home/airflow/.local/lib/python3.11/site-packages/airflow/cli/commands/db_command.py:47 DeprecationWarning: `db init` is deprecated.  Use `db migrate` instead to migrate the db and/or airflow connections create-default-connections to create the default connections
+airflow-init       | DB: postgresql+psycopg2://airflow:***@postgres/airflow
+airflow-init       | [2026-04-03T06:40:28.240+0000] {migration.py:216} INFO - Context impl PostgresqlImpl.
+airflow-init       | [2026-04-03T06:40:28.251+0000] {migration.py:219} INFO - Will assume transactional DDL.
+airflow-init       | [2026-04-03T06:40:29.093+0000] {migration.py:216} INFO - Context impl PostgresqlImpl.
+airflow-init       | [2026-04-03T06:40:29.095+0000] {migration.py:219} INFO - Will assume transactional DDL.
+airflow-init       | [2026-04-03T06:40:29.111+0000] {db.py:1616} INFO - Creating tables
+airflow-init       | INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+airflow-init       | INFO  [alembic.runtime.migration] Will assume transactional DDL.
+airflow-init       | WARNI [airflow.models.crypto] empty cryptography key - values will not be stored encrypted.
+airflow-init       | Initialization done
+airflow-init       | Creating admin user...
+airflow-init       | /home/airflow/.local/lib/python3.11/site-packages/flask_limiter/extension.py:336 UserWarning: Using the in-memory storage for tracking rate limits as no storage was explicitly specified. This is not recommended for production use. See: https://flask-limiter.readthedocs.io#configuring-a-storage-backend for documentation about configuring the storage backend.
+airflow-init       | /home/airflow/.local/lib/python3.11/site-packages/openlineage/client/transport/kafka.py:12 UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+airflow-init       | admin already exist in the db
+airflow-init       | Airflow init completed successfully.
+jupyter-ml         |     Groups
+jupyter-ml         |       config         View configuration
+jupyter-ml         |       connections    Manage connections
+jupyter-ml         |       dags           Manage DAGs
+jupyter-ml         |       db             Database operations
+jupyter-ml         |       jobs           Manage jobs
+jupyter-ml         |       pools          Manage pools
+jupyter-ml         |       providers      Display providers
+jupyter-ml         |       roles          Manage roles
+jupyter-ml         |       tasks          Manage tasks
+jupyter-ml         |       users          Manage users
+jupyter-ml         |       variables      Manage variables
+jupyter-ml         | 
+jupyter-ml         |     Commands:
+jupyter-ml         |       cheat-sheet    Display cheat sheet
+jupyter-ml         |       dag-processor  Start a standalone Dag Processor instance
+jupyter-ml         |       info           Show information about current Airflow and environment
+jupyter-ml         |       kerberos       Start a kerberos ticket renewer
+jupyter-ml         |       plugins        Dump information about loaded plugins
+jupyter-ml         |       rotate-fernet-key
+jupyter-ml         |                      Rotate encrypted connection credentials and variables
+jupyter-ml         |       scheduler      Start a scheduler instance
+jupyter-ml         |       standalone     Run an all-in-one copy of Airflow
+jupyter-ml         |       sync-perm      Update permissions for existing roles and optionally DAGs
+jupyter-ml         |       triggerer      Start a triggerer instance
+jupyter-ml         |       version        Show the version
+jupyter-ml         |       webserver      Start a Airflow webserver instance
+jupyter-ml         | 
+jupyter-ml         | Options:
+jupyter-ml         |   -h, --help         show this help message and exit
+airflow-webserver  | [2026-04-03T06:39:24.393+0000] {override.py:1820} INFO - Added Permission can edit on Connections to role Op
+airflow-webserver  | [2026-04-03T06:39:24.395+0000] {override.py:1820} INFO - Added Permission can delete on Connections to role Op
+airflow-webserver  | [2026-04-03T06:39:24.399+0000] {override.py:1820} INFO - Added Permission can create on Pools to role Op
+airflow-webserver  | [2026-04-03T06:39:24.405+0000] {override.py:1820} INFO - Added Permission can edit on Pools to role Op
+airflow-webserver  | [2026-04-03T06:39:24.408+0000] {override.py:1820} INFO - Added Permission can delete on Pools to role Op
+airflow-webserver  | [2026-04-03T06:39:24.415+0000] {override.py:1820} INFO - Added Permission can read on Providers to role Op
+airflow-webserver  | [2026-04-03T06:39:24.420+0000] {override.py:1820} INFO - Added Permission can create on Variables to role Op
+airflow-webserver  | [2026-04-03T06:39:24.426+0000] {override.py:1820} INFO - Added Permission can read on Variables to role Op
+airflow-webserver  | [2026-04-03T06:39:24.433+0000] {override.py:1820} INFO - Added Permission can edit on Variables to role Op
+airflow-webserver  | [2026-04-03T06:39:24.440+0000] {override.py:1820} INFO - Added Permission can delete on Variables to role Op
+airflow-webserver  | [2026-04-03T06:39:24.447+0000] {override.py:1820} INFO - Added Permission can delete on XComs to role Op
+airflow-webserver  | [2026-04-03T06:39:24.454+0000] {override.py:1820} INFO - Added Permission can read on DAGs to role Admin
+airflow-webserver  | [2026-04-03T06:39:24.473+0000] {override.py:1820} INFO - Added Permission can read on DAG Dependencies to role Admin
+airflow-webserver  | [2026-04-03T06:39:24.480+0000] {override.py:1820} INFO - Added Permission can read on DAG Code to role Admin
+airflow-webserver  | [2026-04-03T06:39:24.492+0000] {override.py:1820} INFO - Added Permission can read on Datasets to role Admin
+airflow-webserver  | [2026-04-03T06:39:24.498+0000] {override.py:1820} INFO - Added Permission can read on Cluster Activity to role Admin
+airflow-webserver  | [2026-04-03T06:39:24.503+0000] {override.py:1820} INFO - Added Permission can read on ImportError to role Admin
+airflow-webserver  | [2026-04-03T06:39:24.507+0000] {override.py:1820} INFO - Added Permission can read on DAG Warnings to role Admin
+airflow-webserver  | [2026-04-03T06:39:24.513+0000] {override.py:1820} INFO - Added Permission can read on Task Logs to role Admin
+airflow-webserver  | [2026-04-03T06:39:24.520+0000] {override.py:1820} INFO - Added Permission can read on Website to role Admin
+airflow-webserver  | [2026-04-03T06:39:24.522+0000] {override.py:1820} INFO - Added Permission can edit on DAGs to role Admin
+airflow-webserver  | [2026-04-03T06:39:24.524+0000] {override.py:1820} INFO - Added Permission can delete on DAGs to role Admin
+airflow-webserver  | [2026-04-03 06:39:24 +0000] [6] [INFO] Starting gunicorn 21.2.0
+airflow-webserver  | [2026-04-03T06:39:33.815+0000] {providers_manager.py:280} INFO - Optional provider feature disabled when importing 'airflow.providers.google.leveldb.hooks.leveldb.LevelDBHook' from 'apache-airflow-providers-google' package
+airflow-webserver  | [2026-04-03 06:39:39 +0000] [6] [INFO] Listening at: http://0.0.0.0:8080 (6)
+airflow-webserver  | [2026-04-03 06:39:39 +0000] [6] [INFO] Using worker: sync
+airflow-webserver  | [2026-04-03 06:39:39 +0000] [20] [INFO] Booting worker with pid: 20
+airflow-webserver  | [2026-04-03 06:39:39 +0000] [21] [INFO] Booting worker with pid: 21
+airflow-webserver  | [2026-04-03 06:39:39 +0000] [22] [INFO] Booting worker with pid: 22
+airflow-webserver  | [2026-04-03 06:39:39 +0000] [23] [INFO] Booting worker with pid: 23
+postgres-airflow   | 
+postgres-airflow   |     pg_ctl -D /var/lib/postgresql/data -l logfile start
+postgres-airflow   | 
+postgres-airflow   | waiting for server to start....2026-04-03 06:38:42.849 UTC [46] LOG:  starting PostgreSQL 13.23 (Debian 13.23-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+postgres-airflow   | 2026-04-03 06:38:42.854 UTC [46] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-airflow   | 2026-04-03 06:38:42.868 UTC [47] LOG:  database system was shut down at 2026-04-03 06:38:42 UTC
+postgres-airflow   | 2026-04-03 06:38:42.886 UTC [46] LOG:  database system is ready to accept connections
+postgres-airflow   |  done
+postgres-airflow   | server started
+postgres-airflow   | CREATE DATABASE
+postgres-airflow   | 
+postgres-airflow   | 
+postgres-airflow   | /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+postgres-airflow   | 
+postgres-airflow   | 2026-04-03 06:38:43.372 UTC [46] LOG:  received fast shutdown request
+postgres-airflow   | waiting for server to shut down....2026-04-03 06:38:43.377 UTC [46] LOG:  aborting any active transactions
+postgres-airflow   | 2026-04-03 06:38:43.391 UTC [46] LOG:  background worker "logical replication launcher" (PID 53) exited with exit code 1
+postgres-airflow   | 2026-04-03 06:38:43.397 UTC [48] LOG:  shutting down
+postgres-airflow   | 2026-04-03 06:38:43.429 UTC [46] LOG:  database system is shut down
+postgres-airflow   |  done
+postgres-airflow   | server stopped
+postgres-airflow   | 
+postgres-airflow   | PostgreSQL init process complete; ready for start up.
+postgres-airflow   | 
+postgres-airflow   | 2026-04-03 06:38:43.537 UTC [1] LOG:  starting PostgreSQL 13.23 (Debian 13.23-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+postgres-airflow   | 2026-04-03 06:38:43.540 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+postgres-airflow   | 2026-04-03 06:38:43.540 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+postgres-airflow   | 2026-04-03 06:38:43.544 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-airflow   | 2026-04-03 06:38:43.549 UTC [61] LOG:  database system was shut down at 2026-04-03 06:38:43 UTC
+postgres-airflow   | 2026-04-03 06:38:43.556 UTC [1] LOG:  database system is ready to accept connections
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ 
+
 services:
   postgres:
     image: postgres:13
