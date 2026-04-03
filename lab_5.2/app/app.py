@@ -313,27 +313,55 @@ if file_status["error_log_json"]:
             error_data = {"errors": [], "summary": {}}
     
     errors = error_data.get("errors", [])
-    summary = error_data.get("summary", {})
+    
+    # Преобразуем в DataFrame, если есть ошибки
+    if errors:
+        df_errors = pd.DataFrame(errors)
+        
+        # Нормализуем колонки: создаём error_type из error или error_message
+        if 'error_type' not in df_errors.columns:
+            if 'error' in df_errors.columns:
+                df_errors['error_type'] = df_errors['error'].apply(
+                    lambda x: x.split(':')[0] if isinstance(x, str) else 'Unknown'
+                )
+            elif 'error_message' in df_errors.columns:
+                df_errors['error_type'] = df_errors['error_message'].apply(
+                    lambda x: x.split(':')[0] if isinstance(x, str) else 'Unknown'
+                )
+            else:
+                df_errors['error_type'] = 'Unknown'
+        
+        # Убедимся, что есть error_message
+        if 'error_message' not in df_errors.columns and 'error' in df_errors.columns:
+            df_errors['error_message'] = df_errors['error']
+        
+        # Заполним недостающие колонки значениями по умолчанию
+        for col in ['task_id', 'url', 'is_test_scenario']:
+            if col not in df_errors.columns:
+                df_errors[col] = 'unknown' if col != 'is_test_scenario' else False
+    else:
+        df_errors = pd.DataFrame()
     
     # Сводные метрики
     st.subheader("📈 Сводка по ошибкам")
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Всего записей", summary.get("total_errors", len(errors)))
-    col2.metric("🧪 Тестовые", summary.get("test_errors", 0))
-    col3.metric("⚠️ Продакшен", summary.get("production_errors", 0))
+    total_errors = len(df_errors)
+    test_errors = df_errors['is_test_scenario'].sum() if not df_errors.empty else 0
+    col1.metric("Всего записей", total_errors)
+    col2.metric("🧪 Тестовые", test_errors)
+    col3.metric("⚠️ Продакшен", total_errors - test_errors)
     
-    # Распределение по типам
-    by_type = summary.get("by_type", {})
-    if by_type:
+    if not df_errors.empty:
+        by_type = df_errors['error_type'].value_counts().to_dict()
         col4.metric("Типов ошибок", len(by_type))
+    else:
+        col4.metric("Типов ошибок", 0)
     
     # Таблица ошибок
-    if errors:
+    if not df_errors.empty:
         st.subheader("📋 Таблица ошибок")
         
-        df_errors = pd.DataFrame(errors)
-        
-        # Добавляем визуальные маркеры
+        # Добавляем визуальный маркер
         df_errors["Тип"] = df_errors.apply(
             lambda x: "🧪 TEST" if x.get("is_test_scenario") else "⚠️ PROD",
             axis=1
@@ -352,65 +380,51 @@ if file_status["error_log_json"]:
         
         # Применение фильтров
         filtered_df = df_errors.copy()
-        
         if not filter_show_test:
             filtered_df = filtered_df[~filtered_df["is_test_scenario"]]
-        
         if filter_type:
             filtered_df = filtered_df[filtered_df["error_type"].isin(filter_type)]
-        
         if filter_search:
             filtered_df = filtered_df[filtered_df["error_message"].str.contains(filter_search, case=False, na=True)]
         
         # Отображение таблицы
         display_cols = ["Тип", "timestamp", "task_id", "error_type", "error_message", "url"]
         available_cols = [c for c in display_cols if c in filtered_df.columns]
+        if available_cols:
+            st.dataframe(
+                filtered_df[available_cols],
+                use_container_width=True,
+                hide_index=True,
+                column_config={
+                    "url": st.column_config.LinkColumn("URL", max_width=200),
+                    "error_message": st.column_config.TextColumn("Сообщение", width="large")
+                }
+            )
         
-        st.dataframe(
-            filtered_df[available_cols],
-            use_container_width=True,
-            hide_index=True,
-            column_config={
-                "url": st.column_config.LinkColumn("URL", max_width=200),
-                "error_message": st.column_config.TextColumn("Сообщение", width="large")
-            }
-        )
-        
-        # График распределения
+        # График
         if not filtered_df.empty:
             st.subheader("📊 Распределение по типам ошибок")
-            error_counts = filtered_df["error_type"].value_counts()
-            st.bar_chart(error_counts)
+            st.bar_chart(filtered_df["error_type"].value_counts())
     else:
         st.success("✅ Ошибок не обнаружено в этом запуске!")
     
     # Исходные файлы
     st.subheader("📂 Исходные файлы логов")
-    
-    # JSON файл
     with st.expander("📄 error_log.json", expanded=False):
         with open(FILES["error_log_json"], "r", encoding="utf-8") as f:
             json_content = f.read()
-        st.json(json.loads(json_content), expanded=False)
-        st.download_button(
-            label="⬇️ Скачать JSON",
-            data=json_content,
-            file_name="error_log.json",
-            mime="application/json"
-        )
+        try:
+            st.json(json.loads(json_content), expanded=False)
+        except:
+            st.code(json_content, language="json")
+        st.download_button(label="⬇️ Скачать JSON", data=json_content, file_name="error_log.json", mime="application/json")
     
-    # TXT файл
     if file_status["error_log_txt"]:
         with st.expander("📝 error_log.txt", expanded=False):
             with open(FILES["error_log_txt"], "r", encoding="utf-8") as f:
                 txt_content = f.read()
             st.code(txt_content, language="text", line_numbers=True)
-            st.download_button(
-                label="⬇️ Скачать TXT",
-                data=txt_content,
-                file_name="error_log.txt",
-                mime="text/plain"
-            )
+            st.download_button(label="⬇️ Скачать TXT", data=txt_content, file_name="error_log.txt", mime="text/plain")
 else:
     st.warning("⚠️ Файл не найден. Запустите DAG в Airflow для генерации логов.")
     st.code(f"Ожидаемый путь: {FILES['error_log_json']}", language="text")
