@@ -1,3 +1,56 @@
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ docker compose down -v
+[+] down 8/8
+ ✔ Container airflow-scheduler                  Removed                                                       0.0s
+ ✔ Container jupyter-ml                         Removed                                                       0.0s
+ ✔ Container streamlit-app                      Removed                                                       0.0s
+ ✔ Container airflow-webserver                  Removed                                                       0.0s
+ ✔ Container airflow-init                       Removed                                                       0.0s
+ ✔ Container postgres-airflow                   Removed                                                       0.3s
+ ✔ Volume business_case_rocket_26_postgres_data Removed                                                       0.1s
+ ✔ Network business_case_rocket_26_etl-network  Removed                                                       0.1s
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ docker compose up -d
+[+] up 8/8
+ ✔ Network business_case_rocket_26_etl-network  Created                                                      0.1ss
+ ✔ Volume business_case_rocket_26_postgres_data Created                                                      0.0ss
+ ✔ Container postgres-airflow                   Healthy                                                      7.3ss
+ ✔ Container jupyter-ml                         Created                                                      0.1ss
+ ✔ Container streamlit-app                      Created                                                      0.1ss
+ ✘ Container airflow-init                       Error service "airflow-init" didn't complete successful...   50.8s
+ ✔ Container airflow-scheduler                  Created                                                      0.1ss
+ ✔ Container airflow-webserver                  Created                                                      0.1ss
+service "airflow-init" didn't complete successfully: exit 2
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ docker compose logs airflow-init --tail=30
+airflow-init  | 
+airflow-init  | Create a user
+airflow-init  | 
+airflow-init  | Options:
+airflow-init  |   -h, --help            show this help message and exit
+airflow-init  |   -e, --email EMAIL     Email of the user
+airflow-init  |   -f, --firstname FIRSTNAME
+airflow-init  |                         First name of the user
+airflow-init  |   -l, --lastname LASTNAME
+airflow-init  |                         Last name of the user
+airflow-init  |   -p, --password PASSWORD
+airflow-init  |                         Password of the user, required to create a user without --use-random-password
+airflow-init  |   -r, --role ROLE       Role of the user. Existing roles include Admin, User, Op, Viewer, and Public
+airflow-init  |   --use-random-password
+airflow-init  |                         Do not prompt for password. Use random string instead. Required to create a user without --password
+airflow-init  |   -u, --username USERNAME
+airflow-init  |                         Username of the user
+airflow-init  |   -v, --verbose         Make logging output more verbose
+airflow-init  | 
+airflow-init  | examples:
+airflow-init  | To create an user with "Admin" role and username equals to "admin", run:
+airflow-init  | 
+airflow-init  |     $ airflow users create \
+airflow-init  |           --username admin \
+airflow-init  |           --firstname FIRST_NAME \
+airflow-init  |           --lastname LAST_NAME \
+airflow-init  |           --role Admin \
+airflow-init  |           --email admin@example.org
+airflow-init  | 
+airflow-init  | airflow users create command error: the following arguments are required: -e/--email, -f/--firstname, -l/--lastname, -r/--role, -u/--username, see help above.
+dev@dev-vm:~/Downloads/lab_etl/data_for_labs/lab_airflow/workshop-on-ETL/practice/business_case_rocket_26$ B
 
 services:
   postgres:
