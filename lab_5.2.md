@@ -163,19 +163,12 @@ def main_pipeline(**context):
 ![Logs get_pictures](screenshots/get_picture.png)
 ![Logs get_pictures](screenshots/landing_times_airflow.png)
 
-![ML](screenshots/jupiter_.png)
-![ML](screenshots/jupiter.png)
-
-
 ![Terminal](screenshots/ps.png)
 ![Terminal](screenshots/logs_1.png)
 
 ### Streamlit дашборд
 
 ![Streamlit Dashboard](RocketAnalytics_Variant16.pdf)
-![Streamlit Dashboard](screenshots/static.png)
-![Streamlit Dashboard](screenshots/galery_raket.png)
-![Streamlit Dashboard](screenshots/galery_raket_1.png)
 
 ## Анализ задачи ML
 
