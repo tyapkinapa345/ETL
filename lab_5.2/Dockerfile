@@ -1,5 +1,3 @@
-
-
 # ============================================
 # Dockerfile для ETL Workshop 2026
 # Вариант 16: Rocket Launch Analytics
