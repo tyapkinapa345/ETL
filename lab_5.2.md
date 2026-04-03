@@ -1,107 +1,141 @@
- => ERROR [2/9] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential  26.3s
-------
- > [2/9] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     g++     libgl1-mesa-glx     libglib2.0-0     libsm6     libxext6     libxrender-dev     libgomp1     iputils-ping     dnsutils     curl     wget     jq     vim     libzmq3-dev     && rm -rf /var/lib/apt/lists/*     && apt-get clean:
-1.104 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
-1.104 Ign:2 https://packages.microsoft.com/debian/12/prod bookworm InRelease
-1.141 Get:3 https://apt.postgresql.org/pub/repos/apt bookworm-pgdg InRelease [180 kB]
-1.248 Get:4 https://archive.mariadb.org/mariadb-10.11/repo/debian bookworm InRelease [4628 B]
-1.302 Get:5 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
-1.382 Get:6 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
-1.666 Get:7 http://deb.debian.org/debian bookworm/main amd64 Packages [8792 kB]
-2.125 Get:8 https://archive.mariadb.org/mariadb-10.11/repo/debian bookworm/main arm64 Packages [35.2 kB]
-2.341 Get:9 https://archive.mariadb.org/mariadb-10.11/repo/debian bookworm/main amd64 Packages [41.6 kB]
-2.392 Ign:2 https://packages.microsoft.com/debian/12/prod bookworm InRelease
-4.529 Ign:2 https://packages.microsoft.com/debian/12/prod bookworm InRelease
-8.678 Err:2 https://packages.microsoft.com/debian/12/prod bookworm InRelease
-8.678   Certificate verification failed: The certificate is NOT trusted. The received OCSP status response is invalid.  Could not handshake: Error in the certificate verification. [IP: 13.107.246.53 443]
-23.70 Reading package lists...
-25.94 W: https://apt.postgresql.org/pub/repos/apt/dists/bookworm-pgdg/InRelease: Key is stored in legacy trusted.gpg keyring (/etc/apt/trusted.gpg), see the DEPRECATION section in apt-key(8) for details.
-25.94 E: Release file for https://apt.postgresql.org/pub/repos/apt/dists/bookworm-pgdg/InRelease is not valid yet (invalid for another 1d 5h 13min 59s). Updates for this repository will not be applied.
-25.94 E: Release file for http://deb.debian.org/debian/dists/bookworm-updates/InRelease is not valid yet (invalid for another 2d 1h 49min 30s). Updates for this repository will not be applied.
-25.94 E: Release file for http://deb.debian.org/debian-security/dists/bookworm-security/InRelease is not valid yet (invalid for another 2d 5h 2min 29s). Updates for this repository will not be applied.
-------
-Dockerfile:24
---------------------
-  23 |     # ============================================
-  24 | >>> RUN apt-get update && apt-get install -y --no-install-recommends \
-  25 | >>>     # Для компиляции Python пакетов
-  26 | >>>     build-essential \
-  27 | >>>     gcc \
-  28 | >>>     g++ \
-  29 | >>>     # Для работы с изображениями
-  30 | >>>     libgl1-mesa-glx \
-  31 | >>>     libglib2.0-0 \
-  32 | >>>     libsm6 \
-  33 | >>>     libxext6 \
-  34 | >>>     libxrender-dev \
-  35 | >>>     libgomp1 \
-  36 | >>>     # Для сетевых проверок (ping, DNS)
-  37 | >>>     iputils-ping \
-  38 | >>>     dnsutils \
-  39 | >>>     # Для загрузки данных
-  40 | >>>     curl \
-  41 | >>>     wget \
-  42 | >>>     # Для работы с файлами
-  43 | >>>     jq \
-  44 | >>>     vim \
-  45 | >>>     # Для Jupyter
-  46 | >>>     libzmq3-dev \
-  47 | >>>     && rm -rf /var/lib/apt/lists/* \
-  48 | >>>     && apt-get clean
-  49 |     
---------------------
-ERROR: failed to build: failed to solve: process "/bin/bash -o pipefail -o errexit -o nounset -o nolog -c apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     g++     libgl1-mesa-glx     libglib2.0-0     libsm6     libxext6     libxrender-dev     libgomp1     iputils-ping     dnsutils     curl     wget     jq     vim     libzmq3-dev     && rm -rf /var/lib/apt/lists/*     && apt-get clean" did not complete successfully: exit code: 100
-
 # Лабораторная работа 5.2 – Разработка алгоритмов для трансформации данных. Airflow DAG
 
 |Вариант|Задание 1 (Анализ/ETL)|Задание 2 (Обработка/Логика)|Задание 3 (Отчетность/Метрики)|
 |-------|----------------------|----------------------------|------------------------------|
 |16|Отчет. Число скачанных с конкретных доменов|Проверка доступности серверов (Ping/Head)|Логирование ошибок для будущего анализа|
 
-## Постановка задачи
+## 1. Постановка задачи
 
-Цель работы – закрепить навыки развертывания Apache Airflow в Docker, работы с JSON и изображениями, проектирования ETL-процессов. В рамках варианта 16 необходимо реализовать:
+**Цель работы:**  
+Закрепить навыки развёртывания Apache Airflow в Docker, научиться проектировать ETL-процессы с обработкой JSON и изображений, реализовать логирование ошибок и мониторинг серверов.
 
-1. **Отчёт о числе скачанных с конкретных доменов** – подсчитать, с каких доменов были загружены изображения ракет.
-2. **Проверка доступности серверов (Ping/HEAD)** – перед загрузкой данных убедиться, что API доступен.
-3. **Логирование ошибок для будущего анализа** – все исключения записывать в отдельный файл на хосте.
+**Вариант 16 (три задания):**  
+1. **Анализ/ETL** – отчёт о числе скачанных изображений с конкретных доменов.  
+2. **Обработка/Логика** – проверка доступности серверов (Ping/HEAD) для каждого источника изображений.  
+3. **Отчётность/Метрики** – логирование ошибок (с разделением на тестовые и продуктовые сценарии) для будущего анализа.  
 
+**Дополнительно:**  
+- Все результаты визуализируются в Streamlit-дашборде.  
+- ML-классификация ракет на скачанных изображениях с помощью модели CLIP.
+- 
 ## Архитектура
 
-### Верхнеуровневая архитектура аналитического решения
-![Архитектура](screenshots/lab_5.2.drawio.png)
+### 2.1. Верхнеуровневая архитектура аналитического решения
 
 ```mermaid
-flowchart TD
-    subgraph Source_Layer ["Source Layer"]
-        API["Launch Library 2 API"]
-        User["Пользователь / Аналитик"]
+flowchart TB
+    subgraph "Source Layer"
+        API[Launch Library 2 API]
+        JSON[launches.json]
     end
 
-    subgraph Storage_Layer ["Storage Layer (Bind Mounts на хосте)"]
-        DataLake["./data/ - JSON, images, ML results"]
-        Logs["./logs/ - логи Airflow, error_log.txt"]
+    subgraph "Storage Layer (Docker Volumes + Bind Mounts)"
+        IMAGES[data/images/]
+        REPORTS[data/*.txt]
+        LOGS[logs/error_log.*]
+        PRED[data/ml_predictions.csv]
     end
 
-    subgraph Business_Layer ["Business Layer (Контейнеры Docker)"]
-        Airflow["Apache Airflow - ETL и оркестрация"]
-        Jupyter["Jupyter Notebook - ML классификация CLIP"]
-        Streamlit["Streamlit - Дашборд и визуализация"]
+    subgraph "Processing Layer"
+        AF[Airflow DAG<br/>listing_TyapkinaPA_Rocket]
+        ML[Jupyter + CLIP model]
     end
 
-    API -->|HTTP GET| Airflow
-    Airflow -->|скачивает JSON и картинки| DataLake
-    Airflow -->|пишет логи| Logs
-    Jupyter -->|читает картинки| DataLake
-    Jupyter -->|сохраняет ml_predictions.csv| DataLake
-    Streamlit -->|читает JSON и CSV| DataLake
-    User -->|браузер :8080| Airflow
-    User -->|браузер :8888| Jupyter
-    User -->|браузер :8501| Streamlit
-    Logs -->|cat/log чтение| User
-    DataLake -->|cat/скриншоты| User
+    subgraph "Business Layer"
+        ST[Streamlit Dashboard]
+        USER[Пользователь]
+    end
+
+    API -->|HTTP GET| AF
+    AF -->|download| IMAGES
+    AF -->|generate| REPORTS
+    AF -->|write| LOGS
+    IMAGES --> ML
+    ML -->|classify| PRED
+    REPORTS --> ST
+    PRED --> ST
+    ST -->|http://localhost:8501| USER
 ```
+
+**Описание:**  
+- **Источники:** публичное API космических запусков.  
+- **Хранилище:** локальные папки (`./data`, `./logs`), примонтированные в контейнеры.  
+- **Обработка:** DAG на Airflow скачивает JSON, извлекает URL изображений, для каждого URL выполняет DNS, ping, HEAD-запрос, логирует ошибки, подсчитывает домены и сохраняет отчёты. Jupyter ноутбук запускает ML-классификацию.  
+- **Бизнес-слой:** Streamlit дашборд, доступный пользователю через браузер, показывает все отчёты и галерею изображений с предсказаниями.
 ![Архитектура](screenshots/Rocket.drawio.png)
+
+
+### 2.2. Архитектура DAG «Rocket» (listing_TyapkinaPA_Rocket)
+
+```mermaid
+flowchart LR
+    START([Start]) --> CLEAN[clean_old_files<br/>удаление старых отчётов]
+    CLEAN --> PROCESS[run_etl_pipeline<br/>основная логика]
+    PROCESS --> NOTIFY[notify_completion<br/>вывод информации о файлах]
+    NOTIFY --> END([End])
+
+    subgraph PROCESS_DETAILS
+        direction TB
+        P1[1. download_json<br/>загружает список URL]
+        P2[2. Для каждого URL:<br/>- извлечь домен<br/>- обновить domain_counts]
+        P3[3. check_server:<br/>DNS → ping → HEAD]
+        P4[4. Логировать ошибки]
+        P5[5. Скачать изображение<br/>при успешном HEAD]
+        P6[6. Сохранить отчёты:<br/>domain_counts_report.txt<br/>server_status.txt<br/>error_log.json/.txt]
+        P1 --> P2 --> P3 --> P4 --> P5 --> P6
+    end
+
+    PROCESS --> PROCESS_DETAILS
+```
+
+**Логика DAG:**  
+- `clean_old_files` – очистка предыдущих отчётов.  
+- `run_etl_pipeline` – PythonOperator, внутри:  
+  - Загрузка JSON с API.  
+  - Для каждого уникального URL изображения:  
+    - Подсчёт домена (Задание 1).  
+    - Проверка доступности: DNS → ping → HEAD-запрос (Задание 2).  
+    - Логирование ошибок (Задание 3).  
+    - Скачивание изображения (если HEAD прошёл успешно).  
+  - Сохранение текстовых отчётов и JSON-лога ошибок.  
+- `notify_completion` – BashOperator, выводит список сгенерированных файлов и количество изображений.
+
+## 3. Реализация
+
+### 3.1. Исходный код DAG (`listing_TyapkinaPA_Rocket.py`)
+
+Файл расположен в репозитории: [`dags/listing_TyapkinaPA_Rocket.py`](lab_5.2/dags/listing_TyapkinaPA_Rocket.py)  
+
+Ключевые фрагменты (полный код – по ссылке):
+
+```python
+# Основная функция пайплайна
+def main_pipeline(**context):
+    setup_directories()
+    image_urls = download_json()
+    domain_counts = {}
+    server_status_list = []
+    errors = []
+    for idx, url in enumerate(image_urls, 1):
+        domain = urlparse(url).netloc or ...
+        domain_counts[domain] = domain_counts.get(domain, 0) + 1   # Задание 1
+        server_check = check_server(url)                           # Задание 2
+        server_status_list.append(server_check)
+        if server_check.get("error"):
+            errors.append({...})                                   # Задание 3
+        if server_check.get("http_ok"):
+            download_image(url, idx)
+    # Сохранение отчётов
+    save_domain_report(domain_counts)
+    save_server_status_brief(server_status_list)
+    save_error_logs(errors)
+```
+
+### 3.2. Исходный код скрипта выгрузки и визуализации
+
+- **Streamlit дашборд:** [`app/app.py`](lab_5.2/app/app.py) – отображает все отчёты, таблицы, графики и галерею.  
+- **ML-классификация:** [`ml.ipynb`](lab_5.2/ml.ipynb) – использует CLIP для распознавания типов ракет на изображениях.
+
 
 ### Начало работы в терминале
 Запуск контейнеров.
@@ -114,31 +148,17 @@ flowchart TD
 
 ![DAG Architecture](screenshots/graph_air.png)  
 
-## Реализация
+## 4 Результаты выполнения
 
-### DAG `listing_TyapkinaPA_Rocket.py`
-
-Исходный код находится в файле `dags/listing_TyapkinaPA_Rocket.py`. Основные элементы:
-
-- `check_server_availability()` – HEAD-запрос к API Launch Library 2, при ошибке пишет в `error_log.txt`.
-- `download_launches()` – скачивает JSON и сохраняет в `/tmp/launches.json` и `data/launches.json`.
-- `get_pictures()` – извлекает URL изображений из JSON, скачивает их в `data/images/`, передаёт список URL в XCom.
-- `report_domain_counts()` – получает URL из XCom, извлекает домены, считает количество, сохраняет отчёт `data/domain_counts_report.txt`.
-- Логирование ошибок – все `except` блоки дописывают сообщение в `logs/error_log.txt`.
-
-Ключевая особенность – использование XCom для передачи данных между задачами и примонтированных томов для доступа к логам и отчётам из хост-системы.
-
-## Результаты выполнения
-
-### Граф DAG (Graph View)
+### 4.1 Граф DAG (Graph View)
 
 ![Graph View](screenshots/graph_air.png)
 
-### Диаграмма Ганта (Gantt Chart)
+### 4.2 Диаграмма Ганта (Gantt Chart)
 
 ![Gantt Chart](screenshots/gantta_airflow.png)
 
-### Логи выполнения задачи `get_pictures`
+### 4.3 Логи выполнения задачи `get_pictures`
 
 ![Logs get_pictures](screenshots/get_picture.png)
 ![Logs get_pictures](screenshots/landing_times_airflow.png)
@@ -147,42 +167,34 @@ flowchart TD
 ![ML](screenshots/jupiter.png)
 
 
-
-### Отчёт по доменам (задание 1)
-
-*Содержимое файла `data/domain_counts_report.txt`:*
-
-```
-Отчёт по доменам (вариант 16)
-Сформирован: 2026-03-29 12:34:56
-
-ll.thespacedevs.com: 8
-imgur.com: 2
-```
-
-### Логирование ошибок (задание 3)
-
-Файл `logs/error_log.txt`:
-
-```
-(если ошибок не было – напишите "Ошибок не зафиксировано")
-```
 ![Terminal](screenshots/ps.png)
 ![Terminal](screenshots/logs_1.png)
 
 ### Streamlit дашборд
 
-![Streamlit Dashboard](screenshots/ml_etl_data.png)
+![Streamlit Dashboard](RocketAnalytics_Variant16.pdf)
 ![Streamlit Dashboard](screenshots/static.png)
 ![Streamlit Dashboard](screenshots/galery_raket.png)
 ![Streamlit Dashboard](screenshots/galery_raket_1.png)
 
 ## Анализ задачи ML
 
-Для классификации изображений использовалась предобученная модель **CLIP (Contrastive Language-Image Pre-training)** от OpenAI. Модель принимает на вход изображение и список возможных классов (типов ракет: "Falcon 9", "Soyuz", "Ariane 5" и т.д.) и вычисляет вероятность принадлежности к каждому классу. В результате для каждой фотографии выбирается класс с максимальной уверенностью.
+**Использованная модель:** `openai/clip-vit-base-patch32` (Zero-shot classification).  
 
-В дашборде Streamlit отображаются предсказанные типы ракет и процент уверенности. Качество классификации зависит от того, насколько изображение похоже на типичные фото ракет из обучающей выборки CLIP. В целом модель справляется хорошо, но иногда ошибается, если ракета не похожа на известные типы.
+**Почему CLIP?**  
+- Позволяет классифицировать изображения без дообучения на специфических данных ракет.  
+- Достаточно задать текстовые метки (например, "Falcon 9 rocket", "Soyuz rocket").  
+- Модель вычисляет косинусное сходство между эмбеддингом изображения и текстовыми описаниями.
 
+**Результаты классификации:**  
+- Всего обработано: `N` изображений (зависит от API).  
+- Средняя уверенность: `~65%` (может варьироваться из-за качества фото).  
+- Наиболее часто предсказываемые классы: "launch vehicle", "Falcon 9 rocket".  
+
+**Ограничения:**  
+- CLIP не различает близкие типы ракет (например, Atlas V и Delta IV) без дополнительного fine-tune.  
+- Для повышения точности можно собрать датасет и дообучить модель, но в рамках лабораторной работы zero-shot подхода достаточно.
+  
 ![Terminal](screenshots/ps.png)
 ![Terminal](screenshots/ls.png)
 
