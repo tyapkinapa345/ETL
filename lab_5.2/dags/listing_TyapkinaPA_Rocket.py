@@ -270,8 +270,15 @@ process = PythonOperator(
 )
 
 notify = BashOperator(
-    task_id="notify_success",
-    bash_command="echo 'Pipeline успешно выполнен. Отчёты в /opt/airflow/data/'",
+    task_id="notify_completion",
+    bash_command=(
+        'echo "✅ Pipeline completed successfully!" && '
+        'echo "Files generated:" && '
+        'ls -la /opt/airflow/data/*.txt 2>/dev/null; '
+        'ls -la /opt/airflow/data/*.json 2>/dev/null; '
+        'echo "Images count:" && '
+        'ls /opt/airflow/data/images/ 2>/dev/null | wc -l'
+    ),
     dag=dag,
 )
 
