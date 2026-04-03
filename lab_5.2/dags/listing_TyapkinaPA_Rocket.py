@@ -1,39 +1,3 @@
-
-
-35a7d95e0511
-*** Found local files:
-***   * /opt/airflow/logs/dag_id=listing_TyapkinaPA_Rocket/run_id=manual__2026-04-03T06:58:48.026576+00:00/task_id=notify_completion/attempt=2.log
-[2026-04-03, 20:28:35 UTC] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: listing_TyapkinaPA_Rocket.notify_completion manual__2026-04-03T06:58:48.026576+00:00 [queued]>
-[2026-04-03, 20:28:35 UTC] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: listing_TyapkinaPA_Rocket.notify_completion manual__2026-04-03T06:58:48.026576+00:00 [queued]>
-[2026-04-03, 20:28:35 UTC] {taskinstance.py:2170} INFO - Starting attempt 2 of 2
-[2026-04-03, 20:28:35 UTC] {taskinstance.py:2191} INFO - Executing <Task(BashOperator): notify_completion> on 2026-04-03 06:58:48.026576+00:00
-[2026-04-03, 20:28:35 UTC] {standard_task_runner.py:60} INFO - Started process 648 to run task
-[2026-04-03, 20:28:35 UTC] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'listing_TyapkinaPA_Rocket', 'notify_completion', 'manual__2026-04-03T06:58:48.026576+00:00', '--job-id', '23', '--raw', '--subdir', 'DAGS_FOLDER/download_rocket_launches.py', '--cfg-path', '/tmp/tmpwo4nd_ue']
-[2026-04-03, 20:28:35 UTC] {standard_task_runner.py:88} INFO - Job 23: Subtask notify_completion
-[2026-04-03, 20:28:35 UTC] {task_command.py:423} INFO - Running <TaskInstance: listing_TyapkinaPA_Rocket.notify_completion manual__2026-04-03T06:58:48.026576+00:00 [running]> on host 35a7d95e0511
-[2026-04-03, 20:28:35 UTC] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='Tyapkina P.A.' AIRFLOW_CTX_DAG_ID='listing_TyapkinaPA_Rocket' AIRFLOW_CTX_TASK_ID='notify_completion' AIRFLOW_CTX_EXECUTION_DATE='2026-04-03T06:58:48.026576+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-04-03T06:58:48.026576+00:00'
-[2026-04-03, 20:28:35 UTC] {subprocess.py:63} INFO - Tmp dir root location: /tmp
-[2026-04-03, 20:28:35 UTC] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'echo "✅ Pipeline completed successfully!" && echo "Files generated:" && ls -la /opt/***/data/*.txt /opt/***/data/*.json 2>/dev/null && echo "Images:" && ls /opt/***/data/images/ 2>/dev/null | wc -l']
-[2026-04-03, 20:28:35 UTC] {subprocess.py:86} INFO - Output:
-[2026-04-03, 20:28:35 UTC] {subprocess.py:93} INFO - ✅ Pipeline completed successfully!
-[2026-04-03, 20:28:35 UTC] {subprocess.py:93} INFO - Files generated:
-[2026-04-03, 20:28:35 UTC] {subprocess.py:93} INFO - -rw-r--r-- 1 *** root   666 Apr  3 06:59 /opt/***/data/domain_counts_report.txt
-[2026-04-03, 20:28:35 UTC] {subprocess.py:93} INFO - -rw-r--r-- 1 *** root 18691 Apr  3 06:59 /opt/***/data/server_ping_detailed.txt
-[2026-04-03, 20:28:35 UTC] {subprocess.py:93} INFO - -rw-r--r-- 1 *** root  1205 Apr  3 06:59 /opt/***/data/server_status.txt
-[2026-04-03, 20:28:35 UTC] {subprocess.py:97} INFO - Command exited with return code 2
-[2026-04-03, 20:28:35 UTC] {taskinstance.py:2698} ERROR - Task failed with exception
-Traceback (most recent call last):
-  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
-    result = execute_callable(context=context, **execute_callable_kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/bash.py", line 212, in execute
-    raise AirflowException(
-airflow.exceptions.AirflowException: Bash command failed. The command returned a non-zero exit code 2.
-[2026-04-03, 20:28:35 UTC] {taskinstance.py:1138} INFO - Marking task as FAILED. dag_id=listing_TyapkinaPA_Rocket, task_id=notify_completion, execution_date=20260403T065848, start_date=20260403T202835, end_date=20260403T202835
-[2026-04-03, 20:28:35 UTC] {standard_task_runner.py:107} ERROR - Failed to execute job 23 for task notify_completion (Bash command failed. The command returned a non-zero exit code 2.; 648)
-[2026-04-03, 20:28:36 UTC] {local_task_job_runner.py:234} INFO - Task exited with return code 1
-[2026-04-03, 20:28:36 UTC] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check
-
 """
 DAG для варианта 16:
 - Скачивание JSON с API запусков
@@ -307,14 +271,7 @@ process = PythonOperator(
 
 notify = BashOperator(
     task_id="notify_completion",
-    bash_command=(
-        'echo "✅ Pipeline completed successfully!" && '
-        'echo "Files generated:" && '
-        'ls -la /opt/airflow/data/*.txt 2>/dev/null; '
-        'ls -la /opt/airflow/data/*.json 2>/dev/null; '
-        'echo "Images count:" && '
-        'ls /opt/airflow/data/images/ 2>/dev/null | wc -l'
-    ),
+    bash_command='echo "✅ Pipeline completed successfully!" && echo "Files generated:" && ls -la /opt/airflow/data/*.txt && echo "Images count:" && ls /opt/airflow/data/images/ | wc -l',
     dag=dag,
 )
 
