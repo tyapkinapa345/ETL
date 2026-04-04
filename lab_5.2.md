@@ -67,26 +67,7 @@ flowchart TB
 
 ### 2.2. Архитектура DAG «Rocket» (listing_TyapkinaPA_Rocket)
 
-```mermaid
-flowchart LR
-    START([Start]) --> CLEAN[clean_old_files<br/>удаление старых отчётов]
-    CLEAN --> PROCESS[run_etl_pipeline<br/>основная логика]
-    PROCESS --> NOTIFY[notify_completion<br/>вывод информации о файлах]
-    NOTIFY --> END([End])
 
-    subgraph PROCESS_DETAILS
-        direction TB
-        P1[1. download_json<br/>загружает список URL]
-        P2[2. Для каждого URL:<br/>- извлечь домен<br/>- обновить domain_counts]
-        P3[3. check_server:<br/>DNS → ping → HEAD]
-        P4[4. Логировать ошибки]
-        P5[5. Скачать изображение<br/>при успешном HEAD]
-        P6[6. Сохранить отчёты:<br/>domain_counts_report.txt<br/>server_status.txt<br/>error_log.json/.txt]
-        P1 --> P2 --> P3 --> P4 --> P5 --> P6
-    end
-
-    PROCESS --> PROCESS_DETAILS
-```
 
 **Логика DAG:**  
 - `clean_old_files` – очистка предыдущих отчётов.  
