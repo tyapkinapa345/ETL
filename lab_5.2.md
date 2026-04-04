@@ -22,52 +22,18 @@
 
 ### 2.1. Верхнеуровневая архитектура аналитического решения
 
-```mermaid
-flowchart TB
-    subgraph "Source Layer"
-        API[Launch Library 2 API]
-        JSON[launches.json]
-    end
-
-    subgraph "Storage Layer (Docker Volumes + Bind Mounts)"
-        IMAGES[data/images/]
-        REPORTS[data/*.txt]
-        LOGS[logs/error_log.*]
-        PRED[data/ml_predictions.csv]
-    end
-
-    subgraph "Processing Layer"
-        AF[Airflow DAG<br/>listing_TyapkinaPA_Rocket]
-        ML[Jupyter + CLIP model]
-    end
-
-    subgraph "Business Layer"
-        ST[Streamlit Dashboard]
-        USER[Пользователь]
-    end
-
-    API -->|HTTP GET| AF
-    AF -->|download| IMAGES
-    AF -->|generate| REPORTS
-    AF -->|write| LOGS
-    IMAGES --> ML
-    ML -->|classify| PRED
-    REPORTS --> ST
-    PRED --> ST
-    ST -->|http://localhost:8501| USER
-```
+![Архитектура](screenshots/lab_5.2.drawio.png)
 
 **Описание:**  
 - **Источники:** публичное API космических запусков.  
 - **Хранилище:** локальные папки (`./data`, `./logs`), примонтированные в контейнеры.  
 - **Обработка:** DAG на Airflow скачивает JSON, извлекает URL изображений, для каждого URL выполняет DNS, ping, HEAD-запрос, логирует ошибки, подсчитывает домены и сохраняет отчёты. Jupyter ноутбук запускает ML-классификацию.  
 - **Бизнес-слой:** Streamlit дашборд, доступный пользователю через браузер, показывает все отчёты и галерею изображений с предсказаниями.
-![Архитектура](screenshots/Rocket.drawio.png)
 
 
 ### 2.2. Архитектура DAG «Rocket» (listing_TyapkinaPA_Rocket)
 
-
+![Архитектура](screenshots/Rocket.drawio.png)
 
 **Логика DAG:**  
 - `clean_old_files` – очистка предыдущих отчётов.  
