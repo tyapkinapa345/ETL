@@ -168,7 +168,7 @@ def main_pipeline(**context):
 
 ### Streamlit дашборд
 
-![Streamlit Dashboard](RocketAnalytics_Variant16.pdf)
+[Streamlit Dashboard](RocketAnalytics_Variant16.pdf)
 
 ## Анализ задачи ML
 
